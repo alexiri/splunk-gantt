@@ -48,8 +48,8 @@ define(function(require, exports, module) {
                     // otherwise, drill down by time
                     var data = { 
                         name: '_time',
-                        _span: $.trim($(e.target).data('span')),
-                        value: $.trim($(e.target).data('time'))
+                        _span: parseInt($.trim($(e.target).data('span')))+2,
+                        value: parseInt($.trim($(e.target).data('time')))-1
                     }
                 }
 
