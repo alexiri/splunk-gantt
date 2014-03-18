@@ -72,16 +72,17 @@ define(function(require, exports, module) {
         
         _handleResize: function(e){
 
-            var availableWidth = parseInt(e.data.$el.width()) - margin.left - margin.right;
-            var availableHeight = parseInt(e.data.$el.height());
+            var availableWidth  = parseInt(e.data.$el.width()) - margin.left - margin.right;
+            var availableHeight = parseInt(e.data.$el.height()- margin.top - margin.bottom);
 
             var svg = d3.select(e.data.el)
                 .select("svg")
-                .attr("width", availableWidth)
-                .attr("height", availableHeight);
+                .attr("width", availableWidth + margin.left + margin.right)
+                .attr("height", availableHeight + margin.top + margin.bottom);
 
-            // e.data is the this pointer passed to the callback.
-            // here it refers to this object and we call render()
+            e.data._viz.height = availableHeight;
+            e.data._viz.width  = availableWidth;
+
             e.data.render();
         },
 
