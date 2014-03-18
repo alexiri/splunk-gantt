@@ -1,0 +1,35 @@
+<dashboard script="autodiscover.js">
+    <label>Gantt Chart demo</label>
+    <row>
+        <html>
+            <h2>Gantt Chart demo</h2>
+            <div id="demo-search"
+                 class="splunk-manager"
+                 data-require="splunkjs/mvc/searchmanager"
+                 data-options='{
+                    "search": "index=_internal sourcetype=splunkd | eval resource=\"resource\".random()%10  | eval filter=random()%20 | search filter&lt;2 | transaction maxpause=1m resource | search duration&gt;0 | eval user=\"user\".random()%7 | eval extras=\"{\\\"Source Type\\\":\\\"\"+sourcetype+\"\\\"}\"",
+                    "earliest_time": "-4h",
+                    "latest_time": "now",
+                    "cancelOnUnload": true,
+                    "preview": true
+                 }'>
+            </div>
+            
+            <div id="demo-view"
+                 class="splunk-view"
+                 data-require="app/gantt/components/gantt/gantt"
+                 data-options='{
+                    "managerid": "demo-search",
+                    "startField": "_time",
+                    "durationField": "duration",
+                    "categoryLabel": "Resource",
+                    "categoryField": "resource",
+                    "seriesLabel": "User",
+                    "seriesField": "user",
+                    "extrasField": "extras"
+                 }'>
+            </div>
+            <div class="panel-footer"></div>
+        </html>
+    </row>
+</dashboard>

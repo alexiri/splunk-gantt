@@ -1,0 +1,26 @@
+[
+
+{
+    "id": "demo",
+    "title": "Gantt Chart demo",
+    "short-description": "Add a gantt chart to a dashboard.",
+    "category": "Custom Visualizations",
+    "tags": ["extension"],
+    "sourceFiles": [
+        "/static/app/gantt/components/gantt/gantt.js"
+    ],
+    "related_links": []
+},
+
+{
+    "id": "concurrent",
+    "title": "Concurrent taks",
+    "short-description": "Handling concurrent tasks.",
+    "category": "Custom Visualizations",
+    "tags": ["extension"],
+    "sourceFiles": [
+        "/static/app/gantt/components/gantt/gantt.js"
+    ],
+    "related_links": ["demo"]
+}
+]

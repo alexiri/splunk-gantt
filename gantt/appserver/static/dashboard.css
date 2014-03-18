@@ -1,0 +1,33 @@
+.html .showsource-container {
+    margin: 0 -10px;
+}
+
+.example-info {
+    margin: 0 0 15px 15px;
+}
+.showsource-container .prettyprint {
+    background: #f7f7f9;
+    border: none;
+    border-bottom: 1px solid #aeaeae;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+}
+.prettyprint code,pre {
+    font-size: 12px;
+}
+.showsource-container .nav-tabs > li.active > a {
+    background: #f7f7f9;
+}
+.tab-pane.error {
+    padding: 25px;
+}
+code.inline {
+    padding: 2px 4px;
+}
+
+.showsource-container h5 {
+    padding-left: 15px;
+    padding-bottom: 10px;
+}

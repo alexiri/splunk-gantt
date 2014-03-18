@@ -1,0 +1,60 @@
+This gantt chart visualization is a good way to present transactions or sessions on different resources. 
+The data will be split vertically into different categories (the resources), and will be colored 
+according to the series (users, in the previous example).
+
+<p>The visualization can be configured through the following parameters:
+<ul>
+    <li><code>startField</code>: the field of your search that represents the start of the transaction.</li>
+    <li><code>endField</code>: the field of your search that represents the end of the transaction.</li>
+    <li><code>durationField</code>: the field of your search that represents the length of the transaction.</li>
+    <li><code>categoryLabel</code>: label for categories. Default is 'Category'.</li>
+    <li><code>categoryField</code>: field that represents the categories.</li>
+    <li><code>seriesLabel</code>: label for the series. Default is 'Series'.</li>
+    <li><code>seriesField</code>: field that represents the series.</li>
+    <li><code>showLegend</code>: if 'true', displays the series under the chart as a legend. Default is 'true'.</li>
+    <li><code>compact</code>: if 'true', makes the bars thinner in order to fit more of them. This is particularly useful when there are many concurrent tasks or categories. Default is 'false'.</li>
+    <li><code>extrasField</code>: field that represents any extra information you want displayed in the tooltip. This field can be standard text or a JSON object (such as <code>eval extras="{\"Source Type\": \""+sourcetype+"\", \"Host\": \""+host+"\"}"</code>, note the use of double quotes, which must be properly escaped if defined inside the .xml). The keys of the JSON object will be the labels of the values in the tooltip. You can include HTML in the field, but please use this wisely.</li>
+</ul></p>
+
+<p>Note that any two of <code>startField</code>, <code>endField</code> or <code>durationField</code> 
+must be defined. If all three are defined, <code>durationField</code> is ignored. If only two are 
+defined, the missing field is calculated based on the values of the other two.</p>
+
+<p>If you aren't seeing the events you expect on your graph, check the javascript console of your browser: there may be warnings about events that couldn't be formatted that may help you solve the problem.</p>
+
+<p>Avoid using too many different values for the series. First of all, because the chart will be too
+busy and confusing, but also because the legend won't be fully visible on the page and the colors 
+will start to repeat. Currently, there are a maximum of 20 different colors.<p>
+
+<br/>
+
+<h3>Adding a Gantt chart to your dashboard</h3>
+How to integrate this custom visualization into your deployment and/or app:
+<ol>
+    <li>Load the following <code>autodiscover.js</code> into your app's appserver/static directory. You may rename it to <code>dashboard.js</code> (or add it to said file, if you already have one). You can also keep it as <code>autodiscover.js</code>, but then you will have to include it in each dashboard as shown below.</li>
+    <li>If you don't want to have this app installed, copy all required source files to your app. You can find these in <code>$SPLUNK_HOME$/etc/apps/gantt/appserver/static/components/gantt/</code></li>
+    <li>Add an html element to your simple xml dashboard</li>
+    <li>Use similar <code>&lt;div /&gt;</code> tags to instantiate your custom viz, as well as the search to drive it
+    <ul>
+        <li>Note that you must bind the custom viz to the search manager, denoted by <code>"managerid"</code></li>
+        <li>The "managerid" is bound to the "id" of the searchmanager in the following example</li>
+        <li>Also make sure to reference the correct path to your custom viz source files (<code>data-require</code>)</li>
+        <li>For additional information on using the splunkjs searchmanager, please refer to the Splunk Web Framework Reference Manual</li>
+    </ul></li>
+    <li>Use a search that provides a start time, end time and/or duration, such as a transaction or a log message 
+describing the completion of an operation and how long it took. In the case of transactions that last longer
+than the end of your search, you can calculate a duration using the info_max_time of the search 
+(<code>... | transaction ... | addinfo | eval duration=if(eventcount=1, info_max_time-_time, duration) | ...</code>).</li>
+    <li>Figure out what constitutes categories and series in your case. For example, resources and users, schedules and servers, etc. Categories will be drawn on the left-hand side and the series will define the colors of the bars.</li>
+</ol>
+
+<br/>
+
+<h3>Using forms with Gantt charts</h3>
+If you add a timepicker (for example) to a dashboard with a gantt chart, don't forget to change 
+the time selectors to your search, as follows:
+
+<ul>
+    <li><code>"earliest_time": { "type": "token_safe", "value": "$$earliest$$" },</code></li>
+    <li><code>"latest_time": { "type": "token_safe", "value": "$$latest$$" },</code></li>
+</ul>
