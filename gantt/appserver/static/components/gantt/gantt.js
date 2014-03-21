@@ -290,7 +290,7 @@ define(function(require, exports, module) {
                         }
                         return x;
                     })
-                    .attr("y", function(d) { return this.getBBox().height + keyPadding.top - keyPadding.bottom*2; })
+                    .attr("y", function(d) { return parseFloat($(this).attr("height")) + keyPadding.top - keyPadding.bottom*2; })
                     .attr("fill", "white")
                     .attr("text-anchor", "start");
 
@@ -328,6 +328,18 @@ define(function(require, exports, module) {
             _(categories).each(function(c) {
                 var cData = _(_(data).where({ 'category': c })).sortBy(function(d) { return -d.duration; });
 
+                // Find the colliding tasks first so we don't have to go over all of them every time
+                var overlaps = [];
+                _(cData).each(function(t, i) {
+                    overlaps[i] = [];
+                    _(_(cData).first(i)).each(function(v, j) {
+                        if ((t.startTime <= v.endTime) &&
+                           (v.startTime <= t.endTime)) {
+                            overlaps[i].push(_(cData).indexOf(v));
+                        }
+                    });
+                });
+
                 dataArea.append("g")
                     .attr("class", "layer")
                     .attr("x", 0)
@@ -353,7 +365,7 @@ define(function(require, exports, module) {
                         .attr("x", function(d) { return x(d.startTime); })
                         .attr("width", function(d) { return x(d.endTime)-x(d.startTime); })
                         .attr("height", barHeight)
-                        .attr("y", function(d) {
+                        .attr("y", function(d, i) {
                             var yPos = parseInt(this.parentNode.getAttribute("y"));
 
                             // Get previous siblings
@@ -361,27 +373,47 @@ define(function(require, exports, module) {
                             var elem = this;
                             while(elem = elem.previousSibling) { prevs.push(elem); }
 
-                            if (prevs) {
-                                var myBox = this.getBBox();
-                                var me = { left: myBox.x, top: yPos,   right: myBox.x + myBox.width, bottom: yPos + myBox.height   }
+                            if (prevs && overlaps[i].length > 0) {
+                                var myBox = $(this);
+                                var me = { left  : parseFloat(myBox.attr("x")),
+                                           top   : yPos,
+                                           right : parseFloat(myBox.attr("x")) + parseFloat(myBox.attr("width")),
+                                           bottom: yPos + parseFloat(myBox.attr("height"))
+                                         }
+
+                                // Get all the other tasks boxes once
+                                // Don't use getBBox(), it kills performance
+                                var pBoxes = [];
+                                for(j = 0; j < overlaps[i].length; j++) {
+                                    // prevs is backwards, and this is better than sorting it
+                                    var pBox = $(prevs[prevs.length-1-overlaps[i][j]]);
+
+                                    pBoxes.push({ left  : parseFloat(pBox.attr("x")),
+                                                  top   : parseFloat(pBox.attr("y")),
+                                                  right : parseFloat(pBox.attr("x")) + parseFloat(pBox.attr("width")),
+                                                  bottom: parseFloat(pBox.attr("y")) + parseFloat(myBox.attr("height"))
+                                                });
+                                }
 
                                 var clean = false;
                                 while(!clean) {
-                                    var i;
-                                    for(i = 0; i < prevs.length; i++) {
-                                        var pBox = prevs[i].getBBox();
-    
-                                        var p  = { left: pBox.x,  top: pBox.y, right: pBox.x + pBox.width,   bottom: pBox.y + myBox.height }
+                                    var j;
+                                    for(j = 0; j < overlaps[i].length; j++) {
+                                        var p  = pBoxes[j];
 
-                                        if (overlap(me, p)) {
+                                        if (me.left <= p.right  &&
+                                            p.left  <= me.right &&
+                                            me.top  <  p.bottom &&
+                                            p.top   <  me.bottom) {
+
                                             // Move to the next row down and try again
                                             yPos = me.bottom + barSpacing;
                                             me.top = yPos;
-                                            me.bottom = yPos + myBox.height;
+                                            me.bottom = yPos + parseFloat(myBox.attr("height"));
                                             break;
                                         }
                                     }
-                                    if (i == prevs.length) {
+                                    if (j == overlaps[i].length) {
                                         // If we made it all the way through the for, we didn't overlap with anyone
                                         clean = true;
                                     }
@@ -491,13 +523,6 @@ define(function(require, exports, module) {
                (hours   > 0 ? ("0" + hours  ).slice(-2) + "h " : "") + 
                (minutes > 0 ? ("0" + minutes).slice(-2) + "m " : "") + 
                (seconds > 0 ? ("0" + seconds).slice(-2) + "s"  : "");
-    }
-
-    function overlap(a, b) {
-        return a.left <= b.right  && 
-               b.left <= a.right  &&
-               a.top  <  b.bottom &&
-               b.top  <  a.bottom;
     }
 
     return GanttChart;
