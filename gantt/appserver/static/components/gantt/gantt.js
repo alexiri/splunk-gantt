@@ -290,7 +290,7 @@ define(function(require, exports, module) {
                         }
                         return x;
                     })
-                    .attr("y", function(d) { return parseFloat($(this).attr("height")) + keyPadding.top - keyPadding.bottom*2; })
+                    .attr("y", function(d) { return this.getBBox().height + keyPadding.top - keyPadding.bottom*2; })
                     .attr("fill", "white")
                     .attr("text-anchor", "start");
 
@@ -346,8 +346,10 @@ define(function(require, exports, module) {
                     .attr("y", function(d) {
                         var y = 0;
                         if (this.previousSibling) {
-                            var prevBox = d3.select(this.previousSibling)[0][0].getBBox();
-                            y += prevBox.y + prevBox.height + barSpacing*2;
+                            var h = _(_(this.previousSibling.children).map(function(c) {
+                                return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
+                            })).max();
+                            y += h + barSpacing*2;
                         }
 
                         actualRange.push(y);
@@ -368,12 +370,12 @@ define(function(require, exports, module) {
                         .attr("y", function(d, i) {
                             var yPos = parseInt(this.parentNode.getAttribute("y"));
 
-                            // Get previous siblings
-                            var prevs = [];
-                            var elem = this;
-                            while(elem = elem.previousSibling) { prevs.push(elem); }
+                            if (overlaps[i].length > 0) {
+                                // Get previous siblings
+                                var prevs = [];
+                                var elem = this;
+                                while(elem = elem.previousSibling) { prevs.push(elem); }
 
-                            if (prevs && overlaps[i].length > 0) {
                                 var myBox = $(this);
                                 var me = { left  : parseFloat(myBox.attr("x")),
                                            top   : yPos,
@@ -427,10 +429,13 @@ define(function(require, exports, module) {
                         .on('mouseout', tip.hide);
             });
    
+            // Get the height of the last layer, but don't use BBox
+            var h = _(_(_(dataArea.selectAll(".layer")[0]).last().children).map(function(c) {
+                return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
+            })).max();
+            actualRange.push(h + barSpacing*2);
 
             // Now that all that's done, we can go make the real Y Axis, because we know the actual position of each layer 
-            var lastLayer = _(dataArea.selectAll(".layer")[0]).last().getBBox();
-            actualRange.push(lastLayer.y + lastLayer.height + barSpacing*2);
 
             y = d3.scale.ordinal()
                 .domain(categories)
@@ -466,12 +471,13 @@ define(function(require, exports, module) {
             
         yAxis.call(d3.svg.axis().scale(y).orient("left"))
             .append("text");
-            
+        
         // Move the category labels down to the middle of the first row
+        var yPos = Math.max(gap/2, $(".tick text")[0].getBBox().height/2);
         yAxis.selectAll(".tick text")
-            .attr("y", function(d) {
-                return Math.max(gap/2, this.getBBox().height/2);
-        });
+            .attr("y", yPos);
+
+        var yAxisBBox = viz.svg.select("#yAxis")[0][0].getBBox();
 
         // If we have a categoryLabel other than the default, label the axis
         if (categoryLabel != "Category") {
@@ -482,17 +488,14 @@ define(function(require, exports, module) {
                     return "rotate(-90)" 
                 })
                 .attr("x", function(d) {
-                    var yAxisBBox = viz.svg.select("#yAxis")[0][0].getBBox();
-                    return -(yAxisBBox.height + this.getBBox().height) / 2;
+                    return -(yAxisBBox.height + this.offsetHeight) / 2;
                 })
                 .attr("y", function(d) {
-                    var yAxisBBox = viz.svg.select("#yAxis")[0][0].getBBox();
                     return -yAxisBBox.width - 10;
                 });
         }
         
         // Move the Y axis into position
-        var yAxisBBox = viz.svg.select("#yAxis")[0][0].getBBox();
         viz.svg.select("#yAxis").attr("transform", "translate(" + yAxisBBox.width + ", 0)");
 
         return yAxisBBox;
