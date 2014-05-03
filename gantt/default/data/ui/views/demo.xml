@@ -14,7 +14,7 @@
                     "preview": true
                  }'>
             </div>
-            
+
             <div id="demo-view"
                  class="splunk-view"
                  data-require="app/gantt/components/gantt/gantt"
@@ -24,6 +24,7 @@
                     "durationField": "duration",
                     "categoryLabel": "Resource",
                     "categoryField": "resource",
+                    "categorySearch": "search index=_internal | stats count | eval resource=\"Magic\"",
                     "seriesLabel": "User",
                     "seriesField": "user",
                     "extrasField": "extras"

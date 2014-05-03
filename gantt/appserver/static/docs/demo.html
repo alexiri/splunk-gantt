@@ -9,6 +9,7 @@ according to the series (users, in the previous example).
     <li><code>durationField</code>: the field of your search that represents the length of the transaction.</li>
     <li><code>categoryLabel</code>: label for categories. Default is 'Category'.</li>
     <li><code>categoryField</code>: field that represents the categories.</li>
+    <li><code>categorySearch</code>: search to seed the list of categories.</li>
     <li><code>seriesLabel</code>: label for the series. Default is 'Series'.</li>
     <li><code>seriesField</code>: field that represents the series.</li>
     <li><code>showLegend</code>: if 'true', displays the series under the chart as a legend. Default is 'true'.</li>
@@ -25,6 +26,11 @@ defined, the missing field is calculated based on the values of the other two.</
 <p>Avoid using too many different values for the series. First of all, because the chart will be too
 busy and confusing, but also because the legend won't be fully visible on the page and the colors 
 will start to repeat. Currently, there are a maximum of 20 different colors.<p>
+
+<p>The optional field <code>categorySearch</code> should contain a search to be executed that produces a list of categories
+that will be added to the ones obtained from the search results, should they not be present. This is useful, for example, 
+when you have a list of resources and some of them may be missing in the results. In that case, your search may look like:
+<code>| inputlookup resourcelist</code>. Note that searches must start with the keyword <code>search</code> or a pipe character.</p>
 
 <br/>
 

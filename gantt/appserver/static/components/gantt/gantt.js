@@ -8,7 +8,7 @@ define(function(require, exports, module) {
     var d3tip = require("./contrib/d3.tip");
     var SimpleSplunkView = require("splunkjs/mvc/simplesplunkview");
     var Drilldown = require('splunkjs/mvc/drilldown');
-    
+
     require("css!./gantt.css");
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10};
@@ -18,13 +18,14 @@ define(function(require, exports, module) {
         className: "custom-ganttchart",
 
         options: {
-            managerid: null,   
-            data: "preview", 
+            managerid: null,
+            data: "preview",
             startField: null,
             endField: null,
             durationField: null,
             categoryLabel: "Category",
             categoryField: null,
+	        categorySearch: null,
             seriesLabel: "Series",
             seriesField: null,
             extrasField: null,
@@ -40,13 +41,13 @@ define(function(require, exports, module) {
                 e.preventDefault();
                 if (this.settings.get('drilldownField')) {
                     // If we were given a drilldownField, use it
-                    var data = { 
+                    var data = {
                         name:  this.settings.get('drilldownField'),
                         value: $.trim($(e.target).data('field'))
                     }
                 } else {
                     // otherwise, drill down by time
-                    var data = { 
+                    var data = {
                         name: '_time',
                         _span: parseInt($.trim($(e.target).data('span')))+2,
                         value: parseInt($.trim($(e.target).data('time')))-1
@@ -69,7 +70,7 @@ define(function(require, exports, module) {
             // pointer which gets passed into the callback event
             $(window).resize(this, _.debounce(this._handleResize, 20));
         },
-        
+
         _handleResize: function(e){
 
             var availableWidth  = parseInt(e.data.$el.width()) - margin.left - margin.right;
@@ -106,14 +107,43 @@ define(function(require, exports, module) {
             return { container: this.$el, svg: svg, height: availableHeight, width: availableWidth};
         },
 
+
         formatData: function(data) {
             var startField     = this.settings.get('startField');
             var endField       = this.settings.get('endField');
             var durationField  = this.settings.get('durationField');
             var categoryField  = this.settings.get('categoryField');
+            var categorySearch = this.settings.get('categorySearch');
             var seriesField    = this.settings.get('seriesField');
             var extrasField    = this.settings.get('extrasField');
             var drilldownField = this.settings.get('drilldownField');
+
+	        if (categorySearch && !this.categorySeed) {
+                var that = this;
+                this.categorySeed = [];
+                categorySeed = this.categorySeed;
+
+		        // Run a oneshot search that returns the job's results
+		        this.manager.service.oneshotSearch(
+                    categorySearch,
+                    { earliest_time: this.manager.job._properties.earliestTime,
+                      latest_time: this.manager.job._properties.latestTime },
+                    function(err, results) {
+                        // Collect the results
+                        var fields = results.fields;
+                        var rows = results.rows;
+
+                        for(var i = 0; i < rows.length; i++) {
+                            var values = rows[i];
+                            for(var j = 0; j < values.length; j++) {
+                                if (fields[j] == categoryField) {
+                                    categorySeed.push(values[j]);
+                                }
+                            }
+                        }
+                        that.render();
+                    });
+            }
 
             var taskArray = [];
 
@@ -147,7 +177,7 @@ define(function(require, exports, module) {
                     dur = (end-start)/1000;
                 }
 
-                // If we don't have a duration by now, skip this result                
+                // If we don't have a duration by now, skip this result
                 if (isNaN(dur)) {
                     console.warn("Unable to format event:", d);
                     return;
@@ -194,7 +224,11 @@ define(function(require, exports, module) {
             var svg = $(viz.svg[0]);
             svg.empty();
 
-            var categories = _(_(data).pluck('category')).uniq().sort();
+            var seed = [];
+            if (this.categorySeed) {
+                seed = this.categorySeed;
+            }
+            var categories = _(_(data).pluck('category').concat(seed)).uniq().sort();
             var series     = _(_(data).pluck('series')).uniq().sort();
 
             // Prepare the color scale for the series
@@ -240,7 +274,7 @@ define(function(require, exports, module) {
                         var xAxisBBox = viz.svg.select("#xAxis")[0][0].getBBox();
                         return xAxisBBox.height + 5;
                     });
-            
+
 
             // Create the tooltip
             var tip = d3tip()
@@ -255,7 +289,7 @@ define(function(require, exports, module) {
                             "<td style='color: " + d3.rgb(colorScale(d.series)) + "'>" + d.series + "</td></tr>" +
                         "<tr><td>" + categoryLabel + "</td><td>" + d.category + "</td></tr>";
                     if (_.isObject(d.extras)) {
-                        for (k in d.extras) { 
+                        for (k in d.extras) {
                             tag += "<tr><td>" + k + "</td><td>" + d.extras[k] + "</td></tr>";
                         }
                     } else if (_.isString(d.extras)) {
@@ -267,7 +301,7 @@ define(function(require, exports, module) {
             viz.svg.call(tip);
 
 
-            
+
             //Create the legend
             if (showLegend) {
                 var keyPadding = {top: 2, right: 10, bottom: 2, left: 10, spacing: 10};
@@ -282,7 +316,7 @@ define(function(require, exports, module) {
 
                 var text = rectangles.append("text")
                     .text(function(d) { return d; })
-                    .attr("x", function(d, i) { 
+                    .attr("x", function(d, i) {
                         var x = keyPadding.left;
                         if (this.parentElement.previousSibling) {
                             var prevBox = d3.select(this.parentElement.previousSibling)[0][0].getBBox();
@@ -306,11 +340,11 @@ define(function(require, exports, module) {
                         return x;
                     })
                     .attr("y", 0)
-                    .attr("width", function(d) { 
+                    .attr("width", function(d) {
                         var textBBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
                         return textBBox.width + keyPadding.left + keyPadding.right;
                     })
-                    .attr("height", function(d) { 
+                    .attr("height", function(d) {
                         var textBBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
                         return textBBox.height + keyPadding.top + keyPadding.bottom;
                     })
@@ -348,7 +382,7 @@ define(function(require, exports, module) {
                         if (this.previousSibling) {
                             var h = _(_(this.previousSibling.children).map(function(c) {
                                 return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
-                            })).max();
+                            }).concat([barHeight+barSpacing])).max();
                             y += h + barSpacing*2;
                         }
 
@@ -428,14 +462,14 @@ define(function(require, exports, module) {
                         .on('mouseover', tip.show)
                         .on('mouseout', tip.hide);
             });
-   
+
             // Get the height of the last layer, but don't use BBox
             var h = _(_(_(dataArea.selectAll(".layer")[0]).last().children).map(function(c) {
                 return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
             })).max();
             actualRange.push(h + barSpacing*2);
 
-            // Now that all that's done, we can go make the real Y Axis, because we know the actual position of each layer 
+            // Now that all that's done, we can go make the real Y Axis, because we know the actual position of each layer
 
             y = d3.scale.ordinal()
                 .domain(categories)
@@ -450,7 +484,7 @@ define(function(require, exports, module) {
             xAxis.attr("transform", "translate(" + yAxisBBox.width + ", " + yAxisBBox.height + ")");
 
             if (showLegend) {
-                // Now move the legend to it's place 
+                // Now move the legend to it's place
                 var xAxisBBox = viz.svg.select("#xAxis")[0][0].getBBox();
                 var center = yAxisBBox.width + xAxisBBox.width/2 - viz.svg.select("#legend")[0][0].getBBox().width/2
                 viz.svg.select("#legend").attr("transform", "translate(" + center + ", " + (yAxisBBox.height + xAxisBBox.height + margin.bottom) + ")");
@@ -468,10 +502,10 @@ define(function(require, exports, module) {
         var yAxis = viz.svg.append("g")
             .attr("id", "yAxis")
             .attr("class", "axis");
-            
+
         yAxis.call(d3.svg.axis().scale(y).orient("left"))
             .append("text");
-        
+
         // Move the category labels down to the middle of the first row
         var yPos = Math.max(gap/2, $(".tick text")[0].getBBox().height/2);
         yAxis.selectAll(".tick text")
