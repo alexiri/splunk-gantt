@@ -27,7 +27,7 @@ define(function(require, exports, module) {
             durationField: null,
             categoryLabel: "Category",
             categoryField: null,
-	        categorySearch: null,
+            categorySearch: null,
             seriesLabel: "Series",
             seriesField: null,
             extrasField: null,
@@ -532,7 +532,7 @@ define(function(require, exports, module) {
                 .text(categoryLabel)
                 .attr("class", "title")
                 .attr("transform", function(d) {
-                    return "rotate(-90)" 
+                    return "rotate(-90)";
                 })
                 .attr("x", function(d) {
                     return -(yAxisBBox.height + this.offsetHeight) / 2;
@@ -541,7 +541,7 @@ define(function(require, exports, module) {
                     return -yAxisBBox.width - 10;
                 });
         }
-        
+
         // Move the Y axis into position
         viz.svg.select("#yAxis").attr("transform", "translate(" + yAxisBBox.width + ", 0)");
 
@@ -569,9 +569,9 @@ define(function(require, exports, module) {
         var minutes = parseInt(t / 60)    % 60;
         var seconds = t % 60;
 
-        return (days    > 0 ? ("0" + days   ).slice(-2) + "d " : "") + 
-               (hours   > 0 ? ("0" + hours  ).slice(-2) + "h " : "") + 
-               (minutes > 0 ? ("0" + minutes).slice(-2) + "m " : "") + 
+        return (days    > 0 ? ("0" + days   ).slice(-2) + "d " : "") +
+               (hours   > 0 ? ("0" + hours  ).slice(-2) + "h " : "") +
+               (minutes > 0 ? ("0" + minutes).slice(-2) + "m " : "") +
                (seconds > 0 ? ("0" + seconds).slice(-2) + "s"  : "");
     }
 
