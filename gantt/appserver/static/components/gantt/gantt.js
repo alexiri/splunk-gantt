@@ -109,13 +109,13 @@ define(function(require, exports, module) {
             var footer = $(".panel-footer", this.$el.parent());
             if (footer.length == 0) {
                 this.$el.after("<div class='panel-footer'></div>");
-            }
-            this.resultsLink = new ResultsLinkView(_.extend({}, {}, this.options, {
+                this.resultsLink = new ResultsLinkView(_.extend({}, {}, this.options, {
                                     id: _.uniqueId(this.id + '-resultslink'),
                                     el: $('<div class="view-results pull-left"></div>').appendTo($('.panel-footer', this.$el.parent())),
                                     manager: this.manager.id,
                                     model: this.model
                                 })).render();
+            }
 
             // The returned object gets passed to updateView as viz
             return { container: this.$el, svg: svg, height: availableHeight, width: availableWidth};
