@@ -135,7 +135,6 @@ define(function(require, exports, module) {
 	        if (categorySearch && !this.categorySeed) {
                 var that = this;
                 this.categorySeed = [];
-                categorySeed = this.categorySeed;
 
 		        // Run a oneshot search that returns the job's results
 		        this.manager.service.oneshotSearch(
@@ -151,7 +150,7 @@ define(function(require, exports, module) {
                             var values = rows[i];
                             for(var j = 0; j < values.length; j++) {
                                 if (fields[j] == categoryField) {
-                                    categorySeed.push(values[j]);
+                                    that.categorySeed.push(values[j]);
                                 }
                             }
                         }
