@@ -395,7 +395,7 @@ define(function(require, exports, module) {
                         if (this.previousSibling) {
                             var h = _(_(this.previousSibling.children).map(function(c) {
                                 return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
-                            }).concat([barHeight+barSpacing])).max();
+                            }).concat([parseFloat(this.previousSibling.getAttribute("y"))+barHeight+barSpacing])).max();
                             y += h + barSpacing*2;
                         }
 
