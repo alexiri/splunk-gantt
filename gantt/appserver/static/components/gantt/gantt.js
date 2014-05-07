@@ -9,7 +9,6 @@ define(function(require, exports, module) {
     var SimpleSplunkView = require("splunkjs/mvc/simplesplunkview");
     var Drilldown = require('splunkjs/mvc/drilldown');
     var ResultsLinkView = require("splunkjs/mvc/resultslinkview");
-    var ReportModel = require("models/DashboardReport");
 
     require("css!./gantt.css");
 
@@ -68,7 +67,6 @@ define(function(require, exports, module) {
             this.settings.on("change:categoryField", this.render, this);
             this.settings.on("change:seriesField", this.render, this);
 
-            this.model = new ReportModel();
             // Set up resize callback. The first argument is a this
             // pointer which gets passed into the callback event
             $(window).resize(this, _.debounce(this._handleResize, 20));
@@ -112,8 +110,7 @@ define(function(require, exports, module) {
                 this.resultsLink = new ResultsLinkView(_.extend({}, {}, this.options, {
                                     id: _.uniqueId(this.id + '-resultslink'),
                                     el: $('<div class="view-results pull-left"></div>').appendTo($('.panel-footer', this.$el.parent())),
-                                    manager: this.manager.id,
-                                    model: this.model
+                                    manager: this.manager.id
                                 })).render();
             }
 
