@@ -476,7 +476,7 @@ define(function(require, exports, module) {
             // Get the height of the last layer, but don't use BBox
             var h = _(_(_(dataArea.selectAll(".layer")[0]).last().children).map(function(c) {
                 return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
-            })).max();
+            }).concat([parseFloat(_(dataArea.selectAll(".layer")[0]).last().getAttribute("y"))+barHeight+barSpacing])).max();
             actualRange.push(h + barSpacing*2);
 
             // Now that all that's done, we can go make the real Y Axis, because we know the actual position of each layer
