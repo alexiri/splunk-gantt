@@ -256,8 +256,8 @@ define(function(require, exports, module) {
 
             // Now make the X axis
             var x = d3.time.scale()
-                .domain([d3.min(data, function(d) {return d.startTime;}),
-                         d3.max(data, function(d) {return d.endTime;})])
+                .domain([new Date(this.manager.search.attributes.data.earliestTime),
+                         new Date(this.manager.search.attributes.data.latestTime)])
                 .range([0, width - yAxisBBox.width - margin.left]);
 
             var xAxis = viz.svg.append("g")
