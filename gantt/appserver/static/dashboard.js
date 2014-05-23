@@ -14,11 +14,6 @@ require([
 ], function($, _, DashboardController, SplunkUtil, Backbone, SourceViewer) {
     // Disable Bootstrap auto discovery
     $('body').off('.data-api');
-    // Open external links in new window
-    $('.external[href]').live('click', function(e){
-        e.preventDefault();
-        window.open($(e.currentTarget).attr('href'));
-    });
 
     var APP = 'gantt';
 
