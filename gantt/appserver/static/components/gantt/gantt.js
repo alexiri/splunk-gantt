@@ -345,7 +345,7 @@ define(function(require, exports, module) {
                         var x = 0;
                         if (this.parentElement.previousSibling) {
                             var prevBox = d3.select(this.parentElement.previousSibling)[0][0].getBBox();
-                            x += prevBox.width + keyPadding.right + keyPadding.spacing;
+                            x += prevBox.x + prevBox.width + keyPadding.right + keyPadding.spacing;
                         }
                         return x;
                     })
