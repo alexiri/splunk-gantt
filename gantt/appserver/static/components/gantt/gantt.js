@@ -14,7 +14,9 @@ define(function(require, exports, module) {
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
-    _cleanClass = function(n) { return n.replace(/[^A-Za-z0-9\-\_]/g, "_"); }
+    _cleanClass = function(n) {
+        return n.replace(/[^A-Za-z0-9\-\_]/g, "_")+"-"+n.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+    }
 
     var GanttChart = SimpleSplunkView.extend({
 
