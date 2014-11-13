@@ -339,11 +339,11 @@ define(function(require, exports, module) {
                     .attr("fill", "white")
                     .attr("text-anchor", "start")
                     .on("mouseover", function(d) {
-                        $(".mos").css("opacity", 0.1);
-                        $(".mos-"+d).css("opacity", 1);
+                        $(".mos", $(this).closest('svg')).css("opacity", 0.1);
+                        $(".mos-"+d, $(this).closest('svg')).css("opacity", 1);
                     })
                     .on("mouseout", function(d) {
-                        $(".mos").css("opacity", 1);
+                        $(".mos", $(this).closest('svg')).css("opacity", 1);
                     });
 
                 var rects = rectangles.insert("rect", "text")
@@ -369,11 +369,11 @@ define(function(require, exports, module) {
                     })
                     .attr("fill", function(d) { return d3.rgb(colorScale(d)); })
                     .on("mouseover", function(d) {
-                        $(".mos").css("opacity", 0.1);
-                        $(".mos-"+d).css("opacity", 1);
+                        $(".mos", $(this).closest('svg')).css("opacity", 0.1);
+                        $(".mos-"+d, $(this).closest('svg')).css("opacity", 1);
                     })
                     .on("mouseout", function(d) {
-                        $(".mos").css("opacity", 1);
+                        $(".mos", $(this).closest('svg')).css("opacity", 1);
                     });
             }
 
@@ -486,14 +486,14 @@ define(function(require, exports, module) {
                         })
                         .attr("fill", function(d) { return d3.rgb(colorScale(d.series)); })
                         .on("mouseover", function(d) {
-                            $(".mos").css("opacity", 0.1);
-                            $("#legend .mos-"+d.series).css("opacity", 1);
+                            $(".mos", $(this).closest('svg')).css("opacity", 0.1);
+                            $("#legend .mos-"+d.series, $(this).closest('svg')).css("opacity", 1);
                             $(this).css("opacity", 1);
 
                             tip.show(d);
                         })
                         .on("mouseout", function(d) {
-                            $(".mos").css("opacity", 1);
+                            $(".mos", $(this).closest('svg')).css("opacity", 1);
 
                             tip.hide(d)
                         });
