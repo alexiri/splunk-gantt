@@ -325,6 +325,7 @@ define(function(require, exports, module) {
                         .append("g");
 
                 var text = rectangles.append("text")
+                    .attr("class", function(d) { return "mos mos-"+d;})
                     .text(function(d) { return d; })
                     .attr("x", function(d, i) {
                         var x = keyPadding.left;
@@ -336,9 +337,17 @@ define(function(require, exports, module) {
                     })
                     .attr("y", function(d) { return this.getBBox().height + keyPadding.top - keyPadding.bottom*2; })
                     .attr("fill", "white")
-                    .attr("text-anchor", "start");
+                    .attr("text-anchor", "start")
+                    .on("mouseover", function(d) {
+                        $(".mos").css("opacity", 0.1);
+                        $(".mos-"+d).css("opacity", 1);
+                    })
+                    .on("mouseout", function(d) {
+                        $(".mos").css("opacity", 1);
+                    });
 
                 var rects = rectangles.insert("rect", "text")
+                    .attr("class", function(d) { return "mos mos-"+d;})
                     .attr("rx", 3)
                     .attr("ry", 3)
                     .attr("x", function(d) {
@@ -358,7 +367,14 @@ define(function(require, exports, module) {
                         var textBBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
                         return textBBox.height + keyPadding.top + keyPadding.bottom;
                     })
-                    .attr("fill", function(d) { return d3.rgb(colorScale(d)); });
+                    .attr("fill", function(d) { return d3.rgb(colorScale(d)); })
+                    .on("mouseover", function(d) {
+                        $(".mos").css("opacity", 0.1);
+                        $(".mos-"+d).css("opacity", 1);
+                    })
+                    .on("mouseout", function(d) {
+                        $(".mos").css("opacity", 1);
+                    });
             }
 
 
@@ -402,7 +418,7 @@ define(function(require, exports, module) {
                     .selectAll(".bar")
                     .data(cData)
                     .enter().append("rect")
-                        .attr("class", "bar")
+                        .attr("class", function(d) { return "bar mos mos-"+d.series;})
                         .attr("data-time", function(d) { return d.id.time; })
                         .attr("data-span", function(d) { return d.id.span; })
                         .attr("data-field", function(d) { return d.id.field; })
@@ -469,8 +485,18 @@ define(function(require, exports, module) {
                             return yPos;
                         })
                         .attr("fill", function(d) { return d3.rgb(colorScale(d.series)); })
-                        .on('mouseover', tip.show)
-                        .on('mouseout', tip.hide);
+                        .on("mouseover", function(d) {
+                            $(".mos").css("opacity", 0.1);
+                            $("#legend .mos-"+d.series).css("opacity", 1);
+                            $(this).css("opacity", 1);
+
+                            tip.show(d);
+                        })
+                        .on("mouseout", function(d) {
+                            $(".mos").css("opacity", 1);
+
+                            tip.hide(d)
+                        });
             });
 
             // Get the height of the last layer, but don't use BBox
