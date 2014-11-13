@@ -55,7 +55,7 @@ define(function(require, exports, module) {
                     }
                 }
 
-                Drilldown.handleDrilldown(data, 'row', this.manager);
+                Drilldown.handleDrilldown(data, 'all', this.manager);
             }
         },
 

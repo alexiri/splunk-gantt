@@ -12,6 +12,7 @@ according to the series (users, in the previous example).
     <li><code>categorySearch</code>: search to seed the list of categories.</li>
     <li><code>seriesLabel</code>: label for the series. Default is 'Series'.</li>
     <li><code>seriesField</code>: field that represents the series.</li>
+    <li><code>drilldownField</code>: field to use for drilldowns (if not specified, drilldown by time).</li>
     <li><code>showLegend</code>: if 'true', displays the series under the chart as a legend. Default is 'true'.</li>
     <li><code>compact</code>: if 'true', makes the bars thinner in order to fit more of them. This is particularly useful when there are many concurrent tasks or categories. Default is 'false'.</li>
     <li><code>extrasField</code>: field that represents any extra information you want displayed in the tooltip. This field can be standard text or a JSON object (such as <code>eval extras="{\"Source Type\": \""+sourcetype+"\", \"Host\": \""+host+"\"}"</code>, note the use of double quotes, which must be properly escaped if defined inside the .xml). The keys of the JSON object will be the labels of the values in the tooltip. You can include HTML in the field, but please use this wisely.</li>
