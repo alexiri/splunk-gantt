@@ -31,6 +31,7 @@ define(function(require, exports, module) {
             seriesField: null,
             extrasField: null,
             drilldownField: null,
+            highlightField: null,
             showLegend: "true",
             compact: "false"
         },
@@ -128,6 +129,7 @@ define(function(require, exports, module) {
             var seriesField    = this.settings.get('seriesField');
             var extrasField    = this.settings.get('extrasField');
             var drilldownField = this.settings.get('drilldownField');
+            var highlightField = this.settings.get('highlightField');
 
 	        if (categorySearch && !this.categorySeed) {
                 var that = this;
@@ -200,6 +202,7 @@ define(function(require, exports, module) {
                     "duration"  : dur,
                     "category"  : d[categoryField],
                     "series"    : d[seriesField],
+                    "highlight" : (highlightField? d[highlightField] : d[seriesField]),
                     "extras"    : extras
                 })
             });
@@ -418,7 +421,7 @@ define(function(require, exports, module) {
                     .selectAll(".bar")
                     .data(cData)
                     .enter().append("rect")
-                        .attr("class", function(d) { return "bar mos mos-"+d.series;})
+                        .attr("class", function(d) { return "bar mos mos-"+d.series+" mof-"+d.highlight; })
                         .attr("data-time", function(d) { return d.id.time; })
                         .attr("data-span", function(d) { return d.id.span; })
                         .attr("data-field", function(d) { return d.id.field; })
@@ -488,6 +491,9 @@ define(function(require, exports, module) {
                         .on("mouseover", function(d) {
                             $(".mos", $(this).closest('svg')).css("opacity", 0.1);
                             $("#legend .mos-"+d.series, $(this).closest('svg')).css("opacity", 1);
+                            if (d.highlight != d.series) {
+                                $(".mof-"+d.highlight, $(this).closest('svg')).css("opacity", 1);
+                            }
                             $(this).css("opacity", 1);
 
                             tip.show(d);
