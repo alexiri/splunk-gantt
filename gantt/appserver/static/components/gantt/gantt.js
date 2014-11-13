@@ -14,6 +14,8 @@ define(function(require, exports, module) {
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
+    _cleanClass = function(n) { return n.replace(/[^A-Za-z0-9\-\_]/g, "_"); }
+
     var GanttChart = SimpleSplunkView.extend({
 
         className: "custom-ganttchart",
@@ -328,7 +330,7 @@ define(function(require, exports, module) {
                         .append("g");
 
                 var text = rectangles.append("text")
-                    .attr("class", function(d) { return "mos mos-"+d;})
+                    .attr("class", function(d) { return "mos mos-"+_cleanClass(d);})
                     .text(function(d) { return d; })
                     .attr("x", function(d, i) {
                         var x = keyPadding.left;
@@ -343,14 +345,14 @@ define(function(require, exports, module) {
                     .attr("text-anchor", "start")
                     .on("mouseover", function(d) {
                         $(".mos", $(this).closest('svg')).css("opacity", 0.1);
-                        $(".mos-"+d, $(this).closest('svg')).css("opacity", 1);
+                        $(".mos-"+_cleanClass(d), $(this).closest('svg')).css("opacity", 1);
                     })
                     .on("mouseout", function(d) {
                         $(".mos", $(this).closest('svg')).css("opacity", 1);
                     });
 
                 var rects = rectangles.insert("rect", "text")
-                    .attr("class", function(d) { return "mos mos-"+d;})
+                    .attr("class", function(d) { return "mos mos-"+_cleanClass(d);})
                     .attr("rx", 3)
                     .attr("ry", 3)
                     .attr("x", function(d) {
@@ -373,7 +375,7 @@ define(function(require, exports, module) {
                     .attr("fill", function(d) { return d3.rgb(colorScale(d)); })
                     .on("mouseover", function(d) {
                         $(".mos", $(this).closest('svg')).css("opacity", 0.1);
-                        $(".mos-"+d, $(this).closest('svg')).css("opacity", 1);
+                        $(".mos-"+_cleanClass(d), $(this).closest('svg')).css("opacity", 1);
                     })
                     .on("mouseout", function(d) {
                         $(".mos", $(this).closest('svg')).css("opacity", 1);
@@ -421,7 +423,9 @@ define(function(require, exports, module) {
                     .selectAll(".bar")
                     .data(cData)
                     .enter().append("rect")
-                        .attr("class", function(d) { return "bar mos mos-"+d.series+" mof-"+d.highlight; })
+                        .attr("class", function(d) {
+                            return "bar mos mos-"+_cleanClass(d.series)+" mof-"+_cleanClass(d.highlight);
+                        })
                         .attr("data-time", function(d) { return d.id.time; })
                         .attr("data-span", function(d) { return d.id.span; })
                         .attr("data-field", function(d) { return d.id.field; })
@@ -490,9 +494,9 @@ define(function(require, exports, module) {
                         .attr("fill", function(d) { return d3.rgb(colorScale(d.series)); })
                         .on("mouseover", function(d) {
                             $(".mos", $(this).closest('svg')).css("opacity", 0.1);
-                            $("#legend .mos-"+d.series, $(this).closest('svg')).css("opacity", 1);
+                            $("#legend .mos-"+_cleanClass(d.series), $(this).closest('svg')).css("opacity", 1);
                             if (d.highlight != d.series) {
-                                $(".mof-"+d.highlight, $(this).closest('svg')).css("opacity", 1);
+                                $(".mof-"+_cleanClass(d.highlight), $(this).closest('svg')).css("opacity", 1);
                             }
                             $(this).css("opacity", 1);
 
