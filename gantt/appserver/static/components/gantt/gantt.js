@@ -1,4 +1,3 @@
-// Gantt Chart
 // this displays information as a gantt chart
 
 define(function(require, exports, module) {
@@ -174,6 +173,15 @@ define(function(require, exports, module) {
             }
 
             _(data).each(function(d) {
+
+                // Make sure we're not dealing with mv fields
+                d[startField] = [].concat(d[startField])[0];
+                d[endField]   = [].concat(d[endField])[0];
+                d[durationField] = [].concat(d[durationField])[0];
+                d[extrasField] = [].concat(d[extrasField])[0];
+                d[categoryField] = _([].concat(d[categoryField])).uniq().sort().join(',');
+                d[seriesField] = _([].concat(d[seriesField])).uniq().sort().join(',');
+                d[highlightField] = _([].concat(d[highlightField])).uniq().sort().join(',');
 
                 try {
                     var extras = JSON.parse(d[extrasField]);
