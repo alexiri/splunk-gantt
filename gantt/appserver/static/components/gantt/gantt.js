@@ -1,3 +1,4 @@
+// Gantt Chart
 // this displays information as a gantt chart
 
 define(function(require, exports, module) {
@@ -348,9 +349,50 @@ define(function(require, exports, module) {
                             var prevBox = d3.select(this.parentElement.previousSibling)[0][0].getBBox();
                             x += prevBox.x + prevBox.width + keyPadding.right + keyPadding.spacing;
                         }
+                        var max = d3.select(this.parentElement.parentElement.parentElement)[0][0].getBBox().width;
+                        if (x + this.getBBox().width + keyPadding.right + keyPadding.spacing >= max - keyPadding.spacing) {
+                            x = keyPadding.left;
+                        }
                         return x;
                     })
-                    .attr("y", function(d) { return this.getBBox().height + keyPadding.top - keyPadding.bottom*2; })
+                    .attr("y", function(d) {
+                        var siblings = this.parentElement.parentElement.children;
+
+                        var meBox = this.getBBox();
+                        var y = meBox.height + keyPadding.top - keyPadding.bottom*2;
+                        var me = { left  : meBox.x,
+                                   top   : y,
+                                   right : meBox.x + meBox.width,
+                                   bottom: y + meBox.height
+                                 }
+
+                        for(var i=0; i<siblings.length; i++) {
+                            var child = siblings[i].childNodes[0];
+                            if (this == child) {
+                                break;
+                            }
+
+                            var cBox = child.getBBox();
+                            var cB = { left  : cBox.x,
+                                       top   : cBox.y,
+                                       right : cBox.x + cBox.width,
+                                       bottom: cBox.y + cBox.height
+                                     }
+
+                            if (me.left <= cB.right  &&
+                                cB.left  <= me.right &&
+                                me.top  <  cB.bottom &&
+                                cB.top   <  me.bottom) {
+
+                                // Move down one line
+                                me.top = me.bottom + keyPadding.bottom + keyPadding.spacing;
+                                me.bottom = me.top + meBox.height;
+                                // Start looking again
+                                i = 0;
+                            }
+                        }
+                        return me.top;
+                    })
                     .attr("fill", "white")
                     .attr("text-anchor", "start")
                     .on("mouseover", function(d) {
@@ -366,21 +408,20 @@ define(function(require, exports, module) {
                     .attr("rx", 3)
                     .attr("ry", 3)
                     .attr("x", function(d) {
-                        var x = 0;
-                        if (this.parentElement.previousSibling) {
-                            var prevBox = d3.select(this.parentElement.previousSibling)[0][0].getBBox();
-                            x += prevBox.x + prevBox.width + keyPadding.right + keyPadding.spacing;
-                        }
-                        return x;
+                        var tBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
+                        return tBox.x - keyPadding.left;
                     })
-                    .attr("y", 0)
+                    .attr("y", function(d) {
+                        var tBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
+                        return tBox.y - keyPadding.top;
+                    })
                     .attr("width", function(d) {
-                        var textBBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
-                        return textBBox.width + keyPadding.left + keyPadding.right;
+                        var tBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
+                        return tBox.width + keyPadding.left + keyPadding.right;
                     })
                     .attr("height", function(d) {
-                        var textBBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
-                        return textBBox.height + keyPadding.top + keyPadding.bottom;
+                        var tBox = d3.select(this.parentElement).select("text")[0][0].getBBox();
+                        return tBox.height + keyPadding.top + keyPadding.bottom;
                     })
                     .attr("fill", function(d) { return d3.rgb(colorScale(d)); })
                     .on("mouseover", function(d) {
