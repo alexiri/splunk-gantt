@@ -521,10 +521,10 @@ define(function(require, exports, module) {
                                     for(j = 0; j < overlaps[i].length; j++) {
                                         var p  = pBoxes[j];
 
-                                        if (me.left <= p.right  &&
-                                            p.left  <= me.right &&
-                                            me.top  <  p.bottom &&
-                                            p.top   <  me.bottom) {
+                                        if (me.left < p.right  &&
+                                            p.left  < me.right &&
+                                            me.top  < p.bottom &&
+                                            p.top   < me.bottom) {
 
                                             // Move to the next row down and try again
                                             yPos = me.bottom + barSpacing;
