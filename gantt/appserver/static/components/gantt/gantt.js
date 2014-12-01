@@ -8,6 +8,7 @@ define(function(require, exports, module) {
     var d3tip = require("./contrib/d3.tip");
     var SimpleSplunkView = require("splunkjs/mvc/simplesplunkview");
     var Drilldown = require('splunkjs/mvc/drilldown');
+    var TokenUtils = require('splunkjs/mvc/tokenutils');
     var ResultsLinkView = require("splunkjs/mvc/resultslinkview");
 
     require("css!./gantt.css");
@@ -45,22 +46,37 @@ define(function(require, exports, module) {
         events: {
             'click': function(e) {
                 e.preventDefault();
-                if (this.settings.get('drilldownField')) {
-                    // If we were given a drilldownField, use it
-                    var data = {
-                        name:  this.settings.get('drilldownField'),
-                        value: $.trim($(e.target).data('field'))
-                    }
-                } else {
-                    // otherwise, drill down by time
-                    var data = {
-                        name: '_time',
-                        _span: parseInt($.trim($(e.target).data('span')))+2,
-                        value: parseInt($.trim($(e.target).data('time')))-1
-                    }
-                }
+                if (this.settings.get('drilldownSearch')) {
+                    // Cook our own drilldown search
+                    var search = this.settings.get('drilldownSearch');
+                    var data   = $(e.target).data('raw');
 
-                Drilldown.handleDrilldown(data, 'all', this.manager);
+                    search   = TokenUtils.replaceTokenNames(search, data);
+                    earliest = parseInt($.trim($(e.target).data('time')))-1;
+                    latest   = earliest + parseInt($.trim($(e.target).data('span')))+2;
+
+                    Drilldown.redirectToSearchPage({
+                        q: search,
+                        earliest: earliest,
+                        latest: latest,
+                    }, false);
+                } else {
+                    if (this.settings.get('drilldownField')) {
+                        // If we were given a drilldownField, use it
+                        var data = {
+                            name:  this.settings.get('drilldownField'),
+                            value: $.trim($(e.target).data('field'))
+                        }
+                    } else {
+                        // otherwise, drill down by time
+                        var data = {
+                            name: '_time',
+                            _span: parseInt($.trim($(e.target).data('span')))+2,
+                            value: parseInt($.trim($(e.target).data('time')))-1
+                        }
+                    }
+                    Drilldown.autoDrilldown(data, this.manager, {drilldownType: 'all'});
+                }
             }
         },
 
@@ -216,7 +232,8 @@ define(function(require, exports, module) {
                     "category"  : d[categoryField],
                     "series"    : d[seriesField],
                     "highlight" : (highlightField? d[highlightField] : d[seriesField]),
-                    "extras"    : extras
+                    "extras"    : extras,
+                    "raw"       : d
                 })
             });
 
@@ -480,6 +497,7 @@ define(function(require, exports, module) {
                         .attr("data-time", function(d) { return d.id.time; })
                         .attr("data-span", function(d) { return d.id.span; })
                         .attr("data-field", function(d) { return d.id.field; })
+                        .attr("data-raw", function(d) { return JSON.stringify(d.raw); })
                         .attr("rx", barRound)
                         .attr("ry", barRound)
                         .attr("x", function(d) { return x(d.startTime); })

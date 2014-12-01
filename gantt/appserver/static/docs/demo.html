@@ -13,6 +13,7 @@ according to the series (users, in the previous example).
     <li><code>seriesLabel</code>: label for the series. Default is 'Series'.</li>
     <li><code>seriesField</code>: field that represents the series.</li>
     <li><code>drilldownField</code>: field to use for drilldowns (if not specified, drilldown by time).</li>
+    <li><code>drilldownSearch</code>: use this search instead of the automatically-generated drilldown search.</li>
     <li><code>highlightField</code>: field to use for highlighting when putting the mouse over the data (if not specified, only highlight the series label in the legend).</li>
     <li><code>showLegend</code>: if 'true', displays the series under the chart as a legend. Default is 'true'.</li>
     <li><code>compact</code>: if 'true', makes the bars thinner in order to fit more of them. This is particularly useful when there are many concurrent tasks or categories. Default is 'false'.</li>
@@ -30,9 +31,13 @@ busy and confusing, but also because the legend won't be fully visible on the pa
 will start to repeat. Currently, there are a maximum of 20 different colors.<p>
 
 <p>The optional field <code>categorySearch</code> should contain a search to be executed that produces a list of categories
-that will be added to the ones obtained from the search results, should they not be present. This is useful, for example, 
+that will be added to the ones obtained from the search results, should they not be present. This is useful, for example,
 when you have a list of resources and some of them may be missing in the results. In that case, your search may look like:
 <code>| inputlookup resourcelist</code>. Note that searches must start with the keyword <code>search</code> or a pipe character.</p>
+
+<p>The optional field <code>drilldownSearch</code> should contain the search to use instead of the
+automatically-generated drilldown searches. You can use tokens in your search, just like you would do in a dashboard.
+The values for those tokens will be filled in based on what item you clicked on. For example: <code>search index=_internal sourcetype=$sourcetype$ host=$host$</code>. Beware of multi-valued fields, they'll be substituted joined by a comma (ie. <code>mymv="$mymv$"</code> becomes <code>mymv="value1,value2"</code>).</p>
 
 <br/>
 
