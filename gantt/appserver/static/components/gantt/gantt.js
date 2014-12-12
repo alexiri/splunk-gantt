@@ -247,6 +247,7 @@ define(function(require, exports, module) {
             var compact       = (this.settings.get('compact')    === 'true');
             var categoryLabel = this.settings.get('categoryLabel');
             var seriesLabel   = this.settings.get('seriesLabel');
+            var timeAxisMode  = this.settings.get('timeAxisMode');
 
 
             if (compact) {
@@ -288,9 +289,17 @@ define(function(require, exports, module) {
 
 
             // Now make the X axis
+            var timeRange;
+            if (timeAxisMode === 'DATA_RANGE') {
+                timeRange = [d3.min(data, function(d) {return d.startTime;}),
+                             d3.max(data, function(d) {return d.endTime;})];
+            }
+            else {  // SEARCH_RANGE
+                timeRange = [new Date(this.manager.search.attributes.data.earliestTime),
+                             new Date(this.manager.search.attributes.data.latestTime)];
+            }
             var x = d3.time.scale()
-                .domain([new Date(this.manager.search.attributes.data.earliestTime),
-                         new Date(this.manager.search.attributes.data.latestTime)])
+                .domain(timeRange)
                 .range([0, width - yAxisBBox.width - margin.left]);
 
             var xAxis = viz.svg.append("g")
