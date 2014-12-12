@@ -259,6 +259,7 @@ define(function(require, exports, module) {
                 var barSpacing = 4;
                 var barRound   = 3;
             }
+            var rowMinHeight = 10;
             var gap = barHeight + barSpacing;
 
             var width  = viz.width;
@@ -490,7 +491,7 @@ define(function(require, exports, module) {
                         if (this.previousSibling) {
                             var h = _(_(this.previousSibling.children).map(function(c) {
                                 return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
-                            }).concat([parseFloat(this.previousSibling.getAttribute("y"))+barHeight+barSpacing, 10])).max();
+                            }).concat([parseFloat(this.previousSibling.getAttribute("y"))+Math.max(barHeight+barSpacing, rowMinHeight)])).max();
                             y += h + barSpacing*2;
                         }
 
@@ -590,7 +591,7 @@ define(function(require, exports, module) {
             // Get the height of the last layer, but don't use BBox
             var h = _(_(_(dataArea.selectAll(".layer")[0]).last().children).map(function(c) {
                 return parseFloat(c.getAttribute("y"))+parseFloat(c.getAttribute("height"));
-            }).concat([parseFloat(_(dataArea.selectAll(".layer")[0]).last().getAttribute("y"))+barHeight+barSpacing, 10])).max();
+            }).concat([parseFloat(_(dataArea.selectAll(".layer")[0]).last().getAttribute("y"))+Math.max(barHeight+barSpacing, rowMinHeight)])).max();
             actualRange.push(h + barSpacing*2);
 
             // Now that all that's done, we can go make the real Y Axis, because we know the actual position of each layer
