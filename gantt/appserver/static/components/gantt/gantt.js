@@ -291,25 +291,15 @@ define(function(require, exports, module) {
             // Now make the X axis
             var timeRange;
             if (timeAxisMode === 'DATA_RANGE') {
-                var earliestStart;
-                var latestEnd;
-                var numPoints = data.length;
-                for (var i = 0; i < numPoints; i++) {
-                    var dataPoint = data[i];
-                    if (earliestStart == null || dataPoint.startTime.getTime() < earliestStart) {
-                        earliestStart = dataPoint.startTime.getTime();
-                    }
-                    if (latestEnd == null || dataPoint.endTime.getTime() > latestEnd) {
-                        latestEnd = dataPoint.endTime.getTime();
-                    }
-                }
-                timeRange = [new Date(earliestStart), new Date(latestEnd)];
+                timeRange = [d3.min(data, function(d) {return d.startTime;}),
+                             d3.max(data, function(d) {return d.endTime;})];
             }
             else {  // SEARCH_RANGE
                 timeRange = [new Date(this.manager.search.attributes.data.earliestTime),
                              new Date(this.manager.search.attributes.data.latestTime)];
             }
-            var x = d3.time.scale().domain(timeRange)
+            var x = d3.time.scale()
+                .domain(timeRange)
                 .range([0, width - yAxisBBox.width - margin.left]);
 
             var xAxis = viz.svg.append("g")
@@ -698,4 +688,3 @@ define(function(require, exports, module) {
 
     return GanttChart;
 });
-
