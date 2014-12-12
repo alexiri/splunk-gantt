@@ -651,6 +651,7 @@ define(function(require, exports, module) {
                 .attr("y", function(d) {
                     return -yAxisBBox.width - 10;
                 });
+            yAxisBBox = viz.svg.select("#yAxis")[0][0].getBBox();
         }
 
         // Move the Y axis into position
