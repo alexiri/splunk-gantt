@@ -274,7 +274,7 @@ define(function(require, exports, module) {
             if (this.categorySeed) {
                 seed = this.categorySeed;
             }
-            var categories = _(_(data).pluck('category').concat(seed)).uniq()
+            var categories = _(_(data).pluck('category').concat(seed)).uniq();
             if (sortCategories) {
                 categories = categories.sort();
             }
