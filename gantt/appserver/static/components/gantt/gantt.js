@@ -249,6 +249,7 @@ define(function(require, exports, module) {
             var seriesLabel    = this.settings.get('seriesLabel');
             var timeAxisMode   = this.settings.get('timeAxisMode');
             var sortCategories = (this.settings.get('sortCategories') !== 'false'); // default to 'true'
+            var sortSeries     = (this.settings.get('sortSeries')     !== 'false'); // default to 'true'
 
 
             if (compact) {
@@ -279,7 +280,10 @@ define(function(require, exports, module) {
                 categories = categories.sort();
             }
 
-            var series     = _(_(data).pluck('series')).uniq().sort();
+            var series     = _(_(data).pluck('series')).uniq();
+            if (sortSeries) {
+                series = series.sort();
+            }
 
             // Prepare the color scale for the series
             var colorScale = d3.scale.category20()

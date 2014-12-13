@@ -20,6 +20,7 @@ according to the series (users, in the previous example).
     <li><code>extrasField</code>: field that represents any extra information you want displayed in the tooltip. This field can be standard text or a JSON object (such as <code>eval extras="{\"Source Type\": \""+sourcetype+"\", \"Host\": \""+host+"\"}"</code>, note the use of double quotes, which must be properly escaped if defined inside the .xml). The keys of the JSON object will be the labels of the values in the tooltip. You can include HTML in the field, but please use this wisely.</li>
     <li><code>timeAxisMode</code>: if 'DATA_RANGE', the x-axis time range is only from the earliest start time in the data to the latest end time in the data.  Default is 'SEARCH_RANGE', where the x-axis time range covers from the 'earliest_time' in the search criteria to the 'latest_time' in the search criteria.</li>
     <li><code>sortCategories</code>: if 'true', categories are sorted by category label.  If 'false', categories are listed in the order they appear in the data returned from the search.  Default is 'true'.</li>
+    <li><code>sortSeries</code>: if 'true', series are sorted by series label.  If 'false', series are listed in the order they appear in the data returned from the search.  Default is 'true'.</li>
 </ul></p>
 
 <p>Note that any two of <code>startField</code>, <code>endField</code> or <code>durationField</code> 
