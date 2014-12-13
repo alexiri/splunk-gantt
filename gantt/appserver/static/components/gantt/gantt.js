@@ -158,8 +158,8 @@ define(function(require, exports, module) {
 		        // Run a oneshot search that returns the job's results
 		        this.manager.service.oneshotSearch(
                     categorySearch,
-                    { earliest_time: this.manager.job._properties.earliestTime,
-                      latest_time: this.manager.job._properties.latestTime },
+                    { earliest_time: this.manager.job.properties().searchEarliestTime,
+                      latest_time: this.manager.job.properties().searchLatestTime },
                     function(err, results) {
                         // Collect the results
                         var fields = results.fields;
@@ -305,8 +305,8 @@ define(function(require, exports, module) {
                              d3.max(data, function(d) {return d.endTime;})];
             }
             else {  // SEARCH_RANGE
-                timeRange = [new Date(this.manager.search.attributes.data.earliestTime),
-                             new Date(this.manager.search.attributes.data.latestTime)];
+                timeRange = [new Date(this.manager.job.properties().searchEarliestTime * 1000),
+                             new Date(this.manager.job.properties().searchLatestTime * 1000)];
             }
             var x = d3.time.scale()
                 .domain(timeRange)
