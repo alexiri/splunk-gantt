@@ -11,6 +11,10 @@ define(function(require, exports, module) {
     var TokenUtils = require('splunkjs/mvc/tokenutils');
     var ResultsLinkView = require("splunkjs/mvc/resultslinkview");
 
+    // Try to load this module (needed for 6.0 and 6.1 backwards compatibility)
+    var ReportModel;
+    require(['models/Report'], function(model) { ReportModel=model;}, function() { ReportModel=false;});
+
     require("css!./gantt.css");
 
     var margin = {top: 10, right: 10, bottom: 10, left: 10};
@@ -131,7 +135,8 @@ define(function(require, exports, module) {
                 this.resultsLink = new ResultsLinkView(_.extend({}, {}, this.options, {
                                     id: _.uniqueId(this.id + '-resultslink'),
                                     el: $('<div class="view-results pull-left"></div>').appendTo($('.panel-footer', this.$el.parent())),
-                                    manager: this.manager.id
+                                    managerid: this.manager.id,
+                                    model: (ReportModel ? new ReportModel(): false)
                                 })).render();
             }
 
