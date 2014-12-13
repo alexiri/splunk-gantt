@@ -243,11 +243,12 @@ define(function(require, exports, module) {
         updateView: function(viz, data) {
             var that = this;
 
-            var showLegend    = (this.settings.get('showLegend') === 'true');
-            var compact       = (this.settings.get('compact')    === 'true');
-            var categoryLabel = this.settings.get('categoryLabel');
-            var seriesLabel   = this.settings.get('seriesLabel');
-            var timeAxisMode  = this.settings.get('timeAxisMode');
+            var showLegend     = (this.settings.get('showLegend') === 'true');
+            var compact        = (this.settings.get('compact')    === 'true');
+            var categoryLabel  = this.settings.get('categoryLabel');
+            var seriesLabel    = this.settings.get('seriesLabel');
+            var timeAxisMode   = this.settings.get('timeAxisMode');
+            var sortCategories = (this.settings.get('sortCategories') !== 'false'); // default to 'true'
 
 
             if (compact) {
@@ -273,7 +274,11 @@ define(function(require, exports, module) {
             if (this.categorySeed) {
                 seed = this.categorySeed;
             }
-            var categories = _(_(data).pluck('category').concat(seed)).uniq().sort();
+            var categories = _(_(data).pluck('category').concat(seed)).uniq()
+            if (sortCategories) {
+                categories = categories.sort();
+            }
+
             var series     = _(_(data).pluck('series')).uniq().sort();
 
             // Prepare the color scale for the series
