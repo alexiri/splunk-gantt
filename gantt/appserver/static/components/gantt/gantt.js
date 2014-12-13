@@ -248,8 +248,8 @@ define(function(require, exports, module) {
             var categoryLabel  = this.settings.get('categoryLabel');
             var seriesLabel    = this.settings.get('seriesLabel');
             var timeAxisMode   = this.settings.get('timeAxisMode');
-            var sortCategories = (this.settings.get('sortCategories') !== 'false'); // default to 'true'
-            var sortSeries     = (this.settings.get('sortSeries')     !== 'false'); // default to 'true'
+            var sortCategories = (this.settings.get('categorySort') !== 'false'); // default to 'true'
+            var sortSeries     = (this.settings.get('seriesSort')   !== 'false'); // default to 'true'
 
 
             if (compact) {

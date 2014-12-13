@@ -1,5 +1,5 @@
-This gantt chart visualization is a good way to present transactions or sessions on different resources. 
-The data will be split vertically into different categories (the resources), and will be colored 
+This gantt chart visualization is a good way to present transactions or sessions on different resources.
+The data will be split vertically into different categories (the resources), and will be colored
 according to the series (users, in the previous example).
 
 <p>The visualization can be configured through the following parameters:
@@ -10,8 +10,10 @@ according to the series (users, in the previous example).
     <li><code>categoryLabel</code>: label for categories. Default is 'Category'.</li>
     <li><code>categoryField</code>: field that represents the categories.</li>
     <li><code>categorySearch</code>: search to seed the list of categories.</li>
+    <li><code>categorySort</code>: if 'true', categories are sorted by category label.  If 'false', categories are listed in the order they appear in the data returned from the search.  Default is 'true'.</li>
     <li><code>seriesLabel</code>: label for the series. Default is 'Series'.</li>
     <li><code>seriesField</code>: field that represents the series.</li>
+    <li><code>seriesSort</code>: if 'true', series are sorted by series label.  If 'false', series are listed in the order they appear in the data returned from the search.  Default is 'true'.</li>
     <li><code>drilldownField</code>: field to use for drilldowns (if not specified, drilldown by time).</li>
     <li><code>drilldownSearch</code>: use this search instead of the automatically-generated drilldown search.</li>
     <li><code>highlightField</code>: field to use for highlighting when putting the mouse over the data (if not specified, only highlight the series label in the legend).</li>
@@ -19,8 +21,6 @@ according to the series (users, in the previous example).
     <li><code>compact</code>: if 'true', makes the bars thinner in order to fit more of them. This is particularly useful when there are many concurrent tasks or categories. Default is 'false'.</li>
     <li><code>extrasField</code>: field that represents any extra information you want displayed in the tooltip. This field can be standard text or a JSON object (such as <code>eval extras="{\"Source Type\": \""+sourcetype+"\", \"Host\": \""+host+"\"}"</code>, note the use of double quotes, which must be properly escaped if defined inside the .xml). The keys of the JSON object will be the labels of the values in the tooltip. You can include HTML in the field, but please use this wisely.</li>
     <li><code>timeAxisMode</code>: if 'DATA_RANGE', the x-axis time range is only from the earliest start time in the data to the latest end time in the data.  Default is 'SEARCH_RANGE', where the x-axis time range covers from the 'earliest_time' in the search criteria to the 'latest_time' in the search criteria.</li>
-    <li><code>sortCategories</code>: if 'true', categories are sorted by category label.  If 'false', categories are listed in the order they appear in the data returned from the search.  Default is 'true'.</li>
-    <li><code>sortSeries</code>: if 'true', series are sorted by series label.  If 'false', series are listed in the order they appear in the data returned from the search.  Default is 'true'.</li>
 </ul></p>
 
 <p>Note that any two of <code>startField</code>, <code>endField</code> or <code>durationField</code> 
