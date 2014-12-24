@@ -1,5 +1,21 @@
-<dashboard script="autodiscover.js">
+<form script="autodiscover.js">
     <label>Gantt Chart demo</label>
+    <fieldset submitButton="false">
+        <input type="time" token="time" searchWhenChanged="true">
+            <label></label>
+            <default>
+                <earliest>-4h@m</earliest>
+                <latest>now</latest>
+            </default>
+        </input>
+        <input type="dropdown" token="filter">
+            <label>Duration of transactions</label>
+            <choice value="90">Short</choice>
+            <choice value="50">Medium</choice>
+            <choice value="10">Long</choice>
+            <default>50</default>
+        </input>
+    </fieldset>
     <row>
         <html>
             <h2>Gantt Chart demo</h2>
@@ -7,9 +23,9 @@
                  class="splunk-manager"
                  data-require="splunkjs/mvc/searchmanager"
                  data-options='{
-                    "search": "index=_internal sourcetype=splunkd | eval resource=\"resource\".random()%10  | eval filter=random()%20 | search filter&lt;2 | transaction maxpause=1m resource | search duration&gt;0 | eval user=\"user\".random()%7 | eval extras=\"{\\\"Source Type\\\":\\\"\"+sourcetype+\"\\\"}\"",
-                    "earliest_time": "-4h",
-                    "latest_time": "now",
+                    "search": { "type": "token_safe", "value": "index=_internal sourcetype=splunkd | where random()%100&lt;$$filter$$ | eval resource=\"resource\".random()%10 | transaction maxpause=1m resource | search duration&gt;0 | eval user=\"user\".random()%7 | eval extras=\"{\\\"Source Type\\\":\\\"\"+sourcetype+\"\\\"}\"" },
+                    "earliest_time": { "type": "token_safe", "value": "$$time.earliest$$" },
+                    "latest_time": { "type": "token_safe", "value": "$$time.latest$$" },
                     "cancelOnUnload": true,
                     "preview": true
                  }'>
@@ -32,4 +48,4 @@
             </div>
         </html>
     </row>
-</dashboard>
+</form>
