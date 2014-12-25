@@ -1,7 +1,20 @@
 <form script="autodiscover.js">
     <label>Concurrent tasks</label>
+    <search id="demo_search">
+        <query><![CDATA[
+        index=_internal sourcetype=splunkd
+        | eval resource="resource".random()%10
+        | eval user="user".random()%7
+        | where random()%80<1
+        | transaction maxpause=3m resource,user
+        | search duration>0
+        | eval extras="{\"Source Type\":\""+sourcetype+"\"}"
+        ]]></query>
+        <earliest>$time.earliest$</earliest>
+        <latest>$time.latest$</latest>
+    </search>
     <fieldset autoRun="true" submitButton="false">
-      <input type="time" searchWhenChanged="true">
+      <input type="time" token="time" searchWhenChanged="true">
         <default>
           <earliestTime>-4h@m</earliestTime>
           <latestTime>now</latestTime>
@@ -20,23 +33,12 @@
 
         <html depends="$show_gantt$">
             <h2>Gantt Chart with concurrent tasks</h2>
-            <div id="demo-search"
-                 class="splunk-manager"
-                 data-require="splunkjs/mvc/searchmanager"
-                 data-options='{
-                    "search": "index=_internal sourcetype=splunkd | eval resource=\"resource\".random()%10 | eval user=\"user\".random()%7 | eval filter=random()%20 | search filter&lt;2 | transaction maxpause=3m resource,user | search duration&gt;0 | eval extras=\"{\\\"Source Type\\\":\\\"\"+sourcetype+\"\\\"}\"",
-                    "earliest_time": { "type": "token_safe", "value": "$$earliest$$" },
-                    "latest_time": { "type": "token_safe", "value": "$$latest$$" },
-                    "cancelOnUnload": true,
-                    "preview": true
-                 }'>
-            </div>
             
             <div id="demo-view"
                  class="splunk-view"
                  data-require="app/gantt/components/gantt/gantt"
                  data-options='{
-                    "managerid": "demo-search",
+                    "managerid": "demo_search",
                     "startField": "_time",
                     "durationField": "duration",
                     "categoryLabel": "Resource",
