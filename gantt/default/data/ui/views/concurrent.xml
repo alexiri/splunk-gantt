@@ -3,13 +3,22 @@
     <fieldset autoRun="true" submitButton="false">
       <input type="time" searchWhenChanged="true">
         <default>
-      <earliestTime>-4h@m</earliestTime>
-      <latestTime>now</latestTime>
+          <earliestTime>-4h@m</earliestTime>
+          <latestTime>now</latestTime>
         </default>
+      </input>
+      <input type="checkbox" token="show_gantt">
+        <choice value="1">Show Gantt chart</choice>
+        <default>1</default>
+        <label></label>
       </input>
     </fieldset>
     <row>
-        <html>
+        <html rejects="$show_gantt$">
+            <p>Gantt chart hidden</p>
+        </html>
+
+        <html depends="$show_gantt$">
             <h2>Gantt Chart with concurrent tasks</h2>
             <div id="demo-search"
                  class="splunk-manager"
