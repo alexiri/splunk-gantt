@@ -46,9 +46,17 @@
                     "seriesLabel": "User",
                     "seriesField": "user",
                     "extrasField": "extras",
+                    "tokenName": "gclick",
+                    "tokenField": "user",
                     "compact": "true"
                  }'>
             </div>
+        </html>
+    </row>
+
+    <row>
+        <html>
+            <p>Token value: <b>$gclick$</b></p>
         </html>
     </row>
 </form>

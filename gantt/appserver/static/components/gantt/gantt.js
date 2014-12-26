@@ -10,6 +10,7 @@ define(function(require, exports, module) {
     var Drilldown = require('splunkjs/mvc/drilldown');
     var TokenUtils = require('splunkjs/mvc/tokenutils');
     var ResultsLinkView = require("splunkjs/mvc/resultslinkview");
+    var mvc = require("splunkjs/mvc");
 
     // Try to load this module (needed for 6.0 and 6.1 backwards compatibility)
     var ReportModel;
@@ -50,7 +51,17 @@ define(function(require, exports, module) {
         events: {
             'click': function(e) {
                 e.preventDefault();
-                if (this.settings.get('drilldownSearch')) {
+                if (this.settings.get('tokenName') && this.settings.get('tokenField')) {
+                    var data = $(e.target).data('raw');
+                    var unsubmittedTokens = mvc.Components.getInstance('default');
+                    var submittedTokens = mvc.Components.getInstance('submitted');
+
+                    unsubmittedTokens.set(this.settings.get('tokenName'), data[this.settings.get('tokenField')]);
+                    submittedTokens.set(unsubmittedTokens.toJSON());
+
+                    // The chart will be lost when the HTML block gets updated, so let's try to get it back
+                    require("splunkjs/ready")();
+                } else if (this.settings.get('drilldownSearch')) {
                     // Cook our own drilldown search
                     var search = this.settings.get('drilldownSearch');
                     var data   = $(e.target).data('raw');

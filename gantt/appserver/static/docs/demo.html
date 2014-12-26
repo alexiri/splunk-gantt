@@ -17,6 +17,8 @@ according to the series (users, in the previous example).
     <li><code>drilldownField</code>: field to use for drilldowns (if not specified, drilldown by time).</li>
     <li><code>drilldownSearch</code>: use this search instead of the automatically-generated drilldown search.</li>
     <li><code>highlightField</code>: field to use for highlighting when putting the mouse over the data (if not specified, only highlight the series label in the legend).</li>
+    <li><code>tokenName</code>: name of the token emitted when clicking on an element.</li>
+    <li><code>tokenField</code>: field to use for the value of the token.</li>
     <li><code>showLegend</code>: if 'true', displays the series under the chart as a legend. Default is 'true'.</li>
     <li><code>compact</code>: if 'true', makes the bars thinner in order to fit more of them. This is particularly useful when there are many concurrent tasks or categories. Default is 'false'.</li>
     <li><code>extrasField</code>: field that represents any extra information you want displayed in the tooltip. This field can be standard text or a JSON object (such as <code>eval extras="{\"Source Type\": \""+sourcetype+"\", \"Host\": \""+host+"\"}"</code>, note the use of double quotes, which must be properly escaped if defined inside the .xml). The keys of the JSON object will be the labels of the values in the tooltip. You can include HTML in the field, but please use this wisely.</li>
@@ -41,6 +43,8 @@ when you have a list of resources and some of them may be missing in the results
 <p>The optional field <code>drilldownSearch</code> should contain the search to use instead of the
 automatically-generated drilldown searches. You can use tokens in your search, just like you would do in a dashboard.
 The values for those tokens will be filled in based on what item you clicked on. For example: <code>search index=_internal sourcetype=$sourcetype$ host=$host$</code>. Beware of multi-valued fields, they'll be substituted joined by a comma (ie. <code>mymv="$mymv$"</code> becomes <code>mymv="value1,value2"</code>).</p>
+
+<p>The optional fields <code>tokenName</code> and <code>tokenField</code>, if defined, will disable the drilldown behavior. When a user clicks on an element of the chart (not of the legend), the value of the field <code>tokenField</code> for that element will be stored in the token <code>tokenName</code>. You can see this in action in the <a href="concurrent">'Concurrent tasks' demo</a>.</p>
 
 <br/>
 
