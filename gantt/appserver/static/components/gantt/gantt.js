@@ -646,7 +646,7 @@ define(function(require, exports, module) {
             .append("text");
 
         // Move the category labels down to the middle of the first row
-        var yPos = Math.max(gap/2, $(".tick text")[0].getBBox().height/2);
+        var yPos = Math.max(gap/2, $(".tick text", viz.container)[0].getBBox().height/2);
         yAxis.selectAll(".tick text")
             .attr("y", yPos);
 
