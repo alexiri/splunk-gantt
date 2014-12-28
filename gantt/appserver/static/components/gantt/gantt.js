@@ -411,10 +411,15 @@ define(function(require, exports, module) {
                         var siblings = this.parentElement.parentElement.children;
 
                         var meBox = this.getBBox();
-                        var y = meBox.height + keyPadding.top - keyPadding.bottom*2;
-                        var me = { left  : meBox.x,
+                        if (this.parentElement.previousSibling) {
+                            var y = parseInt(this.parentElement.previousSibling.childNodes[0].getAttribute('y'));
+                        } else {
+                            var y = meBox.height + keyPadding.top - keyPadding.bottom*2;
+                        }
+
+                        var me = { left  : meBox.x - keyPadding.spacing/2,
                                    top   : y,
-                                   right : meBox.x + meBox.width,
+                                   right : meBox.x + meBox.width + keyPadding.spacing/2,
                                    bottom: y + meBox.height
                                  }
 
@@ -425,9 +430,9 @@ define(function(require, exports, module) {
                             }
 
                             var cBox = child.getBBox();
-                            var cB = { left  : cBox.x,
+                            var cB = { left  : cBox.x - keyPadding.spacing/2,
                                        top   : cBox.y,
-                                       right : cBox.x + cBox.width,
+                                       right : cBox.x + cBox.width + keyPadding.spacing/2,
                                        bottom: cBox.y + cBox.height
                                      }
 
