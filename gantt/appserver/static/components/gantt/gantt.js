@@ -100,8 +100,22 @@ define(function(require, exports, module) {
 
             this.settings.enablePush("value");
 
-            this.settings.on("change:categoryField", this.render, this);
-            this.settings.on("change:seriesField", this.render, this);
+            this.settings.on("change:categoryLabel",  this.render, this);
+            this.settings.on("change:categoryField",  this.render, this);
+            this.settings.on("change:categorySearch", this.render, this);
+            this.settings.on("change:seriesLabel",    this.render, this);
+            this.settings.on("change:seriesField",    this.render, this);
+            this.settings.on("change:extrasField",    this.render, this);
+            this.settings.on("change:drilldownField", this.render, this);
+            this.settings.on("change:highlightField", this.render, this);
+            this.settings.on("change:showLegend",     this.render, this);
+            this.settings.on("change:compact",        this.render, this);
+
+            var unsubmittedTokens = mvc.Components.getInstance('default');
+            unsubmittedTokens.on("change", function() {
+                // The chart will be lost when tokens get updated, so let's try to get it back
+                require("splunkjs/ready")();
+            });
 
             // Set up resize callback. The first argument is a this
             // pointer which gets passed into the callback event
