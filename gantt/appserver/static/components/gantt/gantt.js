@@ -43,6 +43,7 @@ define(function(require, exports, module) {
             drilldownField: null,
             highlightField: null,
             showLegend: "true",
+            timesUTC: "false",
             compact: "false"
         },
 
@@ -109,6 +110,7 @@ define(function(require, exports, module) {
             this.settings.on("change:drilldownField", this.render, this);
             this.settings.on("change:highlightField", this.render, this);
             this.settings.on("change:showLegend",     this.render, this);
+            this.settings.on("change:timesUTC",       this.render, this);
             this.settings.on("change:compact",        this.render, this);
 
             var unsubmittedTokens = mvc.Components.getInstance('default');
@@ -274,6 +276,7 @@ define(function(require, exports, module) {
             var that = this;
 
             var showLegend     = (this.settings.get('showLegend') === 'true');
+            var timesUTC       = (this.settings.get('timesUTC') === 'true');
             var compact        = (this.settings.get('compact')    === 'true');
             var categoryLabel  = this.settings.get('categoryLabel');
             var seriesLabel    = this.settings.get('seriesLabel');
@@ -338,8 +341,14 @@ define(function(require, exports, module) {
                 timeRange = [new Date(this.manager.job.properties().searchEarliestTime * 1000),
                              new Date(this.manager.job.properties().searchLatestTime * 1000)];
             }
-            var x = d3.time.scale()
-                .domain(timeRange)
+
+            if (timesUTC) {
+                var x = d3.time.scale.utc()
+            } else {
+                var x = d3.time.scale()
+            }
+
+            x.domain(timeRange)
                 .range([0, width - yAxisBBox.width - margin.left]);
 
             var xAxis = viz.svg.append("g")
@@ -374,8 +383,8 @@ define(function(require, exports, module) {
                 .offset([-10, 0])
                 .html(function(d) {
                     var tag = "<table>" +
-                        "<tr><td>Start time</td><td>" + dateStr(d.startTime) + "</td></tr>" +
-                        "<tr><td>End time</td><td>" + dateStr(d.endTime) + "</td></tr>" +
+                        "<tr><td>Start time</td><td>" + dateStr(d.startTime, timesUTC) + "</td></tr>" +
+                        "<tr><td>End time</td><td>" + dateStr(d.endTime, timesUTC) + "</td></tr>" +
                         "<tr><td>Duration</td><td>" + durationStr(d.duration) + "</td></tr>" +
                         "<tr><td>" + seriesLabel + "</td>" +
                             "<td style='color: " + d3.rgb(colorScale(d.series)) + "'>" + d.series + "</td></tr>" +
@@ -705,14 +714,29 @@ define(function(require, exports, module) {
         return yAxisBBox;
     }
 
-    function dateStr(d) {
-        var str = $.datepicker.formatDate('M d, yy', d);
+    function dateStr(d, timesUTC) {
+        if (timesUTC) {
+            var year  = d.getUTCFullYear();
+            var month = d.getUTCMonth();
+            var day   = d.getUTCDate();
+            var hour  = d.getUTCHours();
+            var min   = d.getUTCMinutes();
+            var sec   = d.getUTCSeconds();
+        } else {
+            var year  = d.getFullYear();
+            var month = d.getMonth();
+            var day   = d.getDate();
+            var hour  = d.getHours();
+            var min   = d.getMinutes();
+            var sec   = d.getSeconds();
+        }
 
-        if (0 != d.getHours() || 0 != d.getMinutes() || 0 != d.getSeconds()) {
-            if (0 == d.getSeconds()) {
-                str += ' ' + d.toTimeString().substr(0, 5);
-            } else {
-                str += ' ' + d.toTimeString().substr(0, 8);
+        var str = get_month_names('abbreviated')[month+1] + ' ' + day + ', ' + year;
+
+        if (0 != hour || 0 != min || 0 != sec) {
+            str += ' ' + ("0"+hour).slice(-2) + ':' + ("0"+min).slice(-2);
+            if (0 != sec) {
+                str += ':' + ("0"+sec).slice(-2);
             }
         }
 

@@ -20,6 +20,7 @@ according to the series (users, in the previous example).
     <li><code>tokenName</code>: name of the token emitted when clicking on an element.</li>
     <li><code>tokenField</code>: field to use for the value of the token.</li>
     <li><code>showLegend</code>: if 'true', displays the series under the chart as a legend. Default is 'true'.</li>
+    <li><code>timesUTC</code>: if 'true', displays the times in UTC. If false, use the local timezone. Default is 'false'.</li>
     <li><code>compact</code>: if 'true', makes the bars thinner in order to fit more of them. This is particularly useful when there are many concurrent tasks or categories. Default is 'false'.</li>
     <li><code>extrasField</code>: field that represents any extra information you want displayed in the tooltip. This field can be standard text or a JSON object (such as <code>eval extras="{\"Source Type\": \""+sourcetype+"\", \"Host\": \""+host+"\"}"</code>, note the use of double quotes, which must be properly escaped if defined inside the .xml). The keys of the JSON object will be the labels of the values in the tooltip. You can include HTML in the field, but please use this wisely.</li>
     <li><code>timeAxisMode</code>: if 'DATA_RANGE', the x-axis time range is only from the earliest start time in the data to the latest end time in the data.  Default is 'SEARCH_RANGE', where the x-axis time range covers from the 'earliest_time' in the search criteria to the 'latest_time' in the search criteria.</li>
