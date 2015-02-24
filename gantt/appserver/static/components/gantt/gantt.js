@@ -380,6 +380,18 @@ define(function(require, exports, module) {
             // Create the tooltip
             var tip = d3tip()
                 .attr('class', 'd3-tip')
+                .direction(function(d) {
+                    var p = this.parentElement.parentElement.getBBox();
+                    var t = this.getBBox();
+
+                    segments = 10;
+                    /*if (t.x <= (p.x+p.width)/segments) {
+                        return 'ne';
+                    } else*/ if (t.x >= ((p.x+p.width)/segments)*(segments-1)) {
+                        return 'nw';
+                    }
+                    return 'n';
+                })
                 .offset([-10, 0])
                 .html(function(d) {
                     var tag = "<table>" +
@@ -632,12 +644,12 @@ define(function(require, exports, module) {
                             }
                             $(this).css("opacity", 1);
 
-                            tip.show(d);
+                            tip.show.bind(this)(d);
                         })
                         .on("mouseout", function(d) {
                             $(".mos", $(this).closest('svg')).css("opacity", 1);
 
-                            tip.hide(d)
+                            tip.hide.bind(this)(d);
                         });
             });
 

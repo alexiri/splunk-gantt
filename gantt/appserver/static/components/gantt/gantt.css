@@ -62,3 +62,17 @@
   top: 100%;
   left: 0;
 }
+
+.d3-tip.ne:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: -50%;
+  transform: rotate(27deg);
+}
+
+.d3-tip.nw:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 50%;
+  transform: rotate(-27deg);
+}
