@@ -762,10 +762,16 @@ define(function(require, exports, module) {
         var minutes = parseInt(t / 60)    % 60;
         var seconds = t % 60;
 
+        var s = seconds.toFixed(3).replace(/0+$/, '').split('.');
+        var secsPad = ("0", s[0]).slice(-2);
+        if (s[1]) {
+            secsPad += '.' + s[1];
+        }
+
         return (days    > 0 ? ("0" + days   ).slice(-2) + "d " : "") +
                (hours   > 0 ? ("0" + hours  ).slice(-2) + "h " : "") +
                (minutes > 0 ? ("0" + minutes).slice(-2) + "m " : "") +
-               (seconds > 0 ? ("0" + seconds).slice(-2) + "s"  : "");
+               (seconds > 0 ? secsPad                   + "s"  : "");
     }
 
     return GanttChart;
