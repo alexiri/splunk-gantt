@@ -52,7 +52,7 @@ The values for those tokens will be filled in based on what item you clicked on.
 <h3>Adding a Gantt chart to your dashboard</h3>
 How to integrate this custom visualization into your deployment and/or app:
 <ol>
-    <li>Load the following <code>autodiscover.js</code> into your app's appserver/static directory. You may rename it to <code>dashboard.js</code> (or add it to said file, if you already have one). You can also keep it as <code>autodiscover.js</code>, but then you will have to include it in each dashboard as shown below.</li>
+    <li>Load the following <code>autodiscover.js</code> into your app's appserver/static directory. You may rename it to <code>dashboard.js</code> (or add it to said file, if you already have one). You can also keep it as <code>autodiscover.js</code>, but then you will have to include it in each dashboard as shown below. Alternatively, you can load <code>autodiscover.js</code> straight from this app, like this: <code>&lt;form script="gantt:autodiscover.js"&gt;</code> (consult the <a href="http://docs.splunk.com/Documentation/Splunk/latest/Viz/OverviewofSimplifiedXML#CSS.2C_JavaScript.2C_and_other_static_files">documentation</a> for more details).</li>
     <li>If you don't want to have this app installed, copy all required source files to your app. You can find these in <code>$SPLUNK_HOME$/etc/apps/gantt/appserver/static/components/gantt/</code></li>
     <li>Add an html element to your simple xml dashboard</li>
     <li>Use similar <code>&lt;div /&gt;</code> tags to instantiate your custom viz, as well as the search to drive it
