@@ -19,6 +19,10 @@
     font-size: 12px;
 }
 
+.legend text {
+    pointer-events: none;
+}
+
 .d3-tip {
     font-size: 12px;
     font-weight: bold;

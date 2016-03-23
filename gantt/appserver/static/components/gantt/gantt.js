@@ -1,6 +1,8 @@
 // Gantt Chart
 // this displays information as a gantt chart
 
+var fadeDuration = 300;
+
 define(function(require, exports, module) {
 
     var _ = require('underscore');
@@ -489,14 +491,7 @@ define(function(require, exports, module) {
                         return me.top;
                     })
                     .attr("fill", "white")
-                    .attr("text-anchor", "start")
-                    .on("mouseover", function(d) {
-                        $(".mos", $(this).closest('svg')).css("opacity", 0.1);
-                        $(".mos-"+_cleanClass(d), $(this).closest('svg')).css("opacity", 1);
-                    })
-                    .on("mouseout", function(d) {
-                        $(".mos", $(this).closest('svg')).css("opacity", 1);
-                    });
+                    .attr("text-anchor", "start");
 
                 var rects = rectangles.insert("rect", "text")
                     .attr("class", function(d) { return "mos mos-"+_cleanClass(d);})
@@ -519,12 +514,16 @@ define(function(require, exports, module) {
                         return tBox.height + keyPadding.top + keyPadding.bottom;
                     })
                     .attr("fill", function(d) { return d3.rgb(colorScale(d)); })
-                    .on("mouseover", function(d) {
-                        $(".mos", $(this).closest('svg')).css("opacity", 0.1);
-                        $(".mos-"+_cleanClass(d), $(this).closest('svg')).css("opacity", 1);
+                    .on("mouseenter", function(d) {
+                        $(".mos", $(this).closest('svg'))
+                            .not(".mos-"+_cleanClass(d), $(this).closest('svg'))
+                            .stop(true, true)
+                            .animate({opacity: 0.1}, fadeDuration);
                     })
-                    .on("mouseout", function(d) {
-                        $(".mos", $(this).closest('svg')).css("opacity", 1);
+                    .on("mouseleave", function(d) {
+                        $(".mos", $(this).closest('svg'))
+                            .stop(true, true)
+                            .animate({opacity: 1}, fadeDuration);
                     });
             }
 
@@ -639,18 +638,23 @@ define(function(require, exports, module) {
                             return yPos;
                         })
                         .attr("fill", function(d) { return d3.rgb(colorScale(d.series)); })
-                        .on("mouseover", function(d) {
-                            $(".mos", $(this).closest('svg')).css("opacity", 0.1);
-                            $("#legend .mos-"+_cleanClass(d.series), $(this).closest('svg')).css("opacity", 1);
+                        .on("mouseenter", function(d) {
+                            var fade = $(".mos", $(this).closest('svg'))
+                                .not(this)
+                                .not("#legend .mos-"+_cleanClass(d.series), $(this).closest('svg'));
                             if (d.highlight != d.series) {
-                                $(".mof-"+_cleanClass(d.highlight), $(this).closest('svg')).css("opacity", 1);
+                                fade = fade.not(".mof-"+_cleanClass(d.highlight), $(this).closest('svg'));
                             }
-                            $(this).css("opacity", 1);
+
+                            fade.stop(true, true)
+                                .animate({opacity: 0.1}, fadeDuration);
 
                             tip.show.bind(this)(d);
                         })
-                        .on("mouseout", function(d) {
-                            $(".mos", $(this).closest('svg')).css("opacity", 1);
+                        .on("mouseleave", function(d) {
+                            $(".mos", $(this).closest('svg'))
+                                .stop(true, true)
+                                .animate({opacity: 1}, fadeDuration);
 
                             tip.hide.bind(this)(d);
                         });
