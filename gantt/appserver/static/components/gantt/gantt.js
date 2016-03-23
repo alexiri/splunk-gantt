@@ -377,41 +377,44 @@ define(function(require, exports, module) {
                     });
 
 
-            // Create the tooltip
-            var tip = d3tip()
-                .attr('class', 'd3-tip')
-                .direction(function(d) {
-                    var p = this.parentElement.parentElement.getBBox();
-                    var t = this.getBBox();
+            if (! this.tip) {
+                // Create the tooltip
+                this.tip = d3tip()
+                    .attr('class', 'd3-tip d3-tip-' + this.id)
+                    .direction(function(d) {
+                        var p = this.parentElement.parentElement.getBBox();
+                        var t = this.getBBox();
 
-                    segments = 10;
-                    /*if (t.x <= (p.x+p.width)/segments) {
-                        return 'ne';
-                    } else*/ if (t.x >= ((p.x+p.width)/segments)*(segments-1)) {
-                        return 'nw';
-                    }
-                    return 'n';
-                })
-                .offset([-10, 0])
-                .html(function(d) {
-                    var tag = "<table>" +
-                        "<tr><td>Start time</td><td>" + dateStr(d.startTime, timesUTC) + "</td></tr>" +
-                        "<tr><td>End time</td><td>" + dateStr(d.endTime, timesUTC) + "</td></tr>" +
-                        "<tr><td>Duration</td><td>" + durationStr(d.duration) + "</td></tr>" +
-                        "<tr><td>" + seriesLabel + "</td>" +
-                            "<td style='color: " + d3.rgb(colorScale(d.series)) + "'>" + d.series + "</td></tr>" +
-                        "<tr><td>" + categoryLabel + "</td><td>" + d.category + "</td></tr>";
-                    if (_.isObject(d.extras)) {
-                        for (k in d.extras) {
-                            tag += "<tr><td>" + k + "</td><td>" + d.extras[k] + "</td></tr>";
+                        segments = 10;
+                        /*if (t.x <= (p.x+p.width)/segments) {
+                            return 'ne';
+                        } else*/ if (t.x >= ((p.x+p.width)/segments)*(segments-1)) {
+                            return 'nw';
                         }
-                    } else if (_.isString(d.extras)) {
-                        tag += "<tr><td colspan='2'>" + d.extras + "</td></tr>";
-                    }
+                        return 'n';
+                    })
+                    .offset([-10, 0])
+                    .html(function(d) {
+                        var tag = "<table>" +
+                            "<tr><td>Start time</td><td>" + dateStr(d.startTime, timesUTC) + "</td></tr>" +
+                            "<tr><td>End time</td><td>" + dateStr(d.endTime, timesUTC) + "</td></tr>" +
+                            "<tr><td>Duration</td><td>" + durationStr(d.duration) + "</td></tr>" +
+                            "<tr><td>" + seriesLabel + "</td>" +
+                                "<td style='color: " + d3.rgb(colorScale(d.series)) + "'>" + d.series + "</td></tr>" +
+                            "<tr><td>" + categoryLabel + "</td><td>" + d.category + "</td></tr>";
+                        if (_.isObject(d.extras)) {
+                            for (k in d.extras) {
+                                tag += "<tr><td>" + k + "</td><td>" + d.extras[k] + "</td></tr>";
+                            }
+                        } else if (_.isString(d.extras)) {
+                            tag += "<tr><td colspan='2'>" + d.extras + "</td></tr>";
+                        }
 
-                    return tag + "</table>";
-            })
-            viz.svg.call(tip);
+                        return tag + "</table>";
+                })
+                viz.svg.call(this.tip);
+            }
+            var tip = this.tip;
 
 
 
