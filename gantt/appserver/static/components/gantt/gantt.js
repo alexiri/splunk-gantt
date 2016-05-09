@@ -56,6 +56,9 @@ define(function(require, exports, module) {
                 e.preventDefault();
                 if (this.settings.get('tokenName') && this.settings.get('tokenField')) {
                     var data = $(e.target).data('raw');
+                    if (typeof data === 'undefined' || typeof data[this.settings.get('tokenField')] === 'undefined')
+                        return;
+
                     var unsubmittedTokens = mvc.Components.getInstance('default');
                     var submittedTokens = mvc.Components.getInstance('submitted');
 
