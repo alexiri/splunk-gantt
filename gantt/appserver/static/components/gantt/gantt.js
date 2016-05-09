@@ -763,10 +763,10 @@ define(function(require, exports, module) {
     }
 
     function durationStr(t) {
+        var days    = Math.floor(t / 86400);
+        var hours   = Math.floor(t / 3600)  % 24;
+        var minutes = Math.floor(t / 60)    % 60;
 
-        var days    = parseInt(t / 86400);
-        var hours   = parseInt(t / 3600)  % 24;
-        var minutes = parseInt(t / 60)    % 60;
         var seconds = t % 60;
 
         var s = seconds.toFixed(3).replace(/0+$/, '').split('.');
