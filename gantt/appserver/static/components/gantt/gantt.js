@@ -784,7 +784,7 @@ define(function(require, exports, module) {
             secsPad += '.' + s[1];
         }
 
-        return (days    > 0 ? pad(days,    2) + "d " : "") +
+        return (days    > 0 ? days            + "d " : "") +
                (hours   > 0 ? pad(hours,   2) + "h " : "") +
                (minutes > 0 ? pad(minutes, 2) + "m " : "") +
                (seconds > 0 ? secsPad         + "s"  : "");
