@@ -736,6 +736,12 @@ define(function(require, exports, module) {
         return yAxisBBox;
     }
 
+    function pad(n, width, z) {
+        z = z || '0';
+        n = n + '';
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    }
+
     function dateStr(d, timesUTC) {
         if (timesUTC) {
             var year  = d.getUTCFullYear();
@@ -756,9 +762,9 @@ define(function(require, exports, module) {
         var str = get_month_names('abbreviated')[month+1] + ' ' + day + ', ' + year;
 
         if (0 != hour || 0 != min || 0 != sec) {
-            str += ' ' + ("0"+hour).slice(-2) + ':' + ("0"+min).slice(-2);
+            str += ' ' + pad(hour, 2) + ':' + pad(min, 2);
             if (0 != sec) {
-                str += ':' + ("0"+sec).slice(-2);
+                str += ':' + pad(sec, 2);
             }
         }
 
@@ -773,15 +779,15 @@ define(function(require, exports, module) {
         var seconds = t % 60;
 
         var s = seconds.toFixed(3).replace(/0+$/, '').split('.');
-        var secsPad = ("0", s[0]).slice(-2);
+        var secsPad = pad(s[0], 2);
         if (s[1]) {
             secsPad += '.' + s[1];
         }
 
-        return (days    > 0 ? ("0" + days   ).slice(-2) + "d " : "") +
-               (hours   > 0 ? ("0" + hours  ).slice(-2) + "h " : "") +
-               (minutes > 0 ? ("0" + minutes).slice(-2) + "m " : "") +
-               (seconds > 0 ? secsPad                   + "s"  : "");
+        return (days    > 0 ? pad(days,    2) + "d " : "") +
+               (hours   > 0 ? pad(hours,   2) + "h " : "") +
+               (minutes > 0 ? pad(minutes, 2) + "m " : "") +
+               (seconds > 0 ? secsPad         + "s"  : "");
     }
 
     return GanttChart;
